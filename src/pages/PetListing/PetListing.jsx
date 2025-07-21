@@ -4,6 +4,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import debounce from 'lodash.debounce';
 import useAxiosSecure from '@/hooks/UseAxiosSecure';
+import { Link } from 'react-router';
 
 const categories = ['All', 'Dog', 'Cat', 'Fish', 'Rabbit'];
 
@@ -28,7 +29,7 @@ const PetListing = () => {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
-    debouncedSetSearch(e.target.value); // Debounced update
+    debouncedSetSearch(e.target.value);
   };
 
   const handleCategoryChange = (e) => {
@@ -99,9 +100,11 @@ const PetListing = () => {
                 <span><strong>Date:</strong> {new Date(pet.date).toLocaleDateString()}</span>
               </div>
               <div className="mt-3">
-                <button className="w-full bg-primary text-white py-1.5 rounded hover:bg-opacity-90">
-                  View Details
-                </button>
+                <Link to={`/pets/${pet._id}`} className="w-full">
+                  <button className="w-full bg-primary text-white py-1.5 rounded hover:bg-opacity-90">
+                    View Details
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
