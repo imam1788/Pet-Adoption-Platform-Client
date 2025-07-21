@@ -3,13 +3,16 @@ import React, { useContext } from "react";
 import { AuthContext } from "@/providers/AuthProvider";
 import Swal from "sweetalert2";
 import { FaGoogle, FaGithub } from "react-icons/fa";
+import useSaveUser from "@/hooks/UseSaveUser";
 
 export default function SocialLogin() {
   const { googleLogin, githubLogin } = useContext(AuthContext);
+  const saveUser = useSaveUser();
 
   const handleGoogleLogin = async () => {
     try {
-      await googleLogin();
+      const result = await googleLogin();
+      await saveUser(result.user);
       Swal.fire("Success", "Logged in with Google!", "success");
     } catch (error) {
       Swal.fire("Error", error.message, "error");
@@ -18,12 +21,23 @@ export default function SocialLogin() {
 
   const handleGithubLogin = async () => {
     try {
-      await githubLogin();
+      const result = await githubLogin();
+      await saveUser(result.user);
       Swal.fire("Success", "Logged in with GitHub!", "success");
     } catch (error) {
-      Swal.fire("Error", error.message, "error");
+      if (error.code === "auth/account-exists-with-different-credential") {
+        const email = error.customData.email;
+        Swal.fire({
+          icon: "error",
+          title: "Account Exists",
+          text: `An account with the email ${email} already exists with a different sign-in method. Please use that method to login.`,
+        });
+      } else {
+        Swal.fire("Error", error.message, "error");
+      }
     }
   };
+
 
   return (
     <div className="flex flex-col justify-center items-center gap-6 mt-6">

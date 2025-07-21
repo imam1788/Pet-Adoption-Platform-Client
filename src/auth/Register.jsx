@@ -3,21 +3,22 @@ import { useForm } from "react-hook-form";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "@/firebase/firebase.config";
 import { Link, useNavigate } from "react-router";
-import { FaUser, FaArrowUp } from 'react-icons/fa';
+import { FaUser, FaArrowUp } from "react-icons/fa";
 import SocialLogin from "@/components/SocialLogin/SocialLogin";
+import useSaveUser from "@/hooks/UseSaveUser";
 
 export default function Register() {
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm();
 
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
+  const saveUser = useSaveUser();
 
-  // Handle file select and preview
   const onFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -26,15 +27,39 @@ export default function Register() {
     }
   };
 
+  // Request JWT from backend
+  const getJWTToken = async (email) => {
+    try {
+      const response = await fetch("http://localhost:5000/jwt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem("access_token", data.token);
+      }
+    } catch (err) {
+      console.error("Failed to get JWT token:", err);
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
       const photoURL = preview || "";
 
-      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
       await updateProfile(userCredential.user, {
         displayName: data.fullName,
         photoURL,
       });
+
+      await saveUser(userCredential.user);
+      await getJWTToken(userCredential.user.email);
       navigate("/");
     } catch (error) {
       alert(error.message);
@@ -44,18 +69,24 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold mb-6 text-center text-indigo-600">Create an Account</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <h2 className="text-3xl font-bold mb-6 text-center text-indigo-600">
+          Create an Account
+        </h2>
 
-          {/* Image Upload with Stylish Icons */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Profile Photo Upload */}
           <div className="flex flex-col items-center">
             <label
               htmlFor="photoFile"
-              className="group cursor-pointer relative w-20 h-20 rounded-full overflow-hidden border-4  transition shadow-md hover:scale-105"
+              className="group cursor-pointer relative w-20 h-20 rounded-full overflow-hidden border-4 transition shadow-md hover:scale-105"
               title="Click to upload profile image"
             >
               {preview ? (
-                <img src={preview} alt="Profile Preview" className="w-full h-full object-cover" />
+                <img
+                  src={preview}
+                  alt="Profile Preview"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="flex items-center justify-center w-full h-full bg-gray-100 relative">
                   <FaUser className="text-5xl text-gray-400 group-hover:text-indigo-500 transition" />
@@ -72,10 +103,12 @@ export default function Register() {
             </label>
           </div>
 
-
           {/* Full Name */}
           <div>
-            <label htmlFor="fullName" className="block mb-1 font-semibold text-gray-700">
+            <label
+              htmlFor="fullName"
+              className="block mb-1 font-semibold text-gray-700"
+            >
               Full Name
             </label>
             <input
@@ -93,7 +126,10 @@ export default function Register() {
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block mb-1 font-semibold text-gray-700">
+            <label
+              htmlFor="email"
+              className="block mb-1 font-semibold text-gray-700"
+            >
               Email Address
             </label>
             <input
@@ -111,7 +147,10 @@ export default function Register() {
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="block mb-1 font-semibold text-gray-700">
+            <label
+              htmlFor="password"
+              className="block mb-1 font-semibold text-gray-700"
+            >
               Password
             </label>
             <input
@@ -120,7 +159,7 @@ export default function Register() {
               placeholder="Choose a strong password"
               {...register("password", {
                 required: "Password is required",
-                minLength: { value: 6, message: "Min 6 characters" },
+                minLength: { value: 6, message: "Minimum 6 characters" },
               })}
               className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${errors.password ? "border-red-500" : "border-gray-300"
                 }`}
@@ -146,8 +185,7 @@ export default function Register() {
           </Link>
         </p>
 
-        <SocialLogin></SocialLogin>
-
+        <SocialLogin />
       </div>
     </div>
   );

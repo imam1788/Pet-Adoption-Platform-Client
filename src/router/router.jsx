@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import { createBrowserRouter } from "react-router";
 import Login from "@/auth/Login";
 import Register from "@/auth/Register";
+import PetListing from "@/pages/PetListing/PetListing";
 
 export const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ export const router = createBrowserRouter([
       {
         path: '/',
         Component: Home
+      },
+      {
+        path: 'pets',
+        Component: PetListing
       },
       {
         path: 'login',

@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase/firebase.config"; // your firebase config file
 import { Link, useNavigate } from "react-router";
 import SocialLogin from "@/components/SocialLogin/SocialLogin";
+import useAuthToken from "@/hooks/UseAuthToken";
 
 export default function Login() {
   const {
@@ -13,11 +14,13 @@ export default function Login() {
   } = useForm();
 
   const navigate = useNavigate();
+  const getToken = useAuthToken();
 
   const onSubmit = async (data) => {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      // Redirect to home/dashboard on success
+      const result = await signInWithEmailAndPassword(auth, data.email, data.password);
+      const loggedUser = result.user;
+      await getToken(loggedUser.email); // ensure this is awaited
       navigate("/");
     } catch (error) {
       alert(error.message);
