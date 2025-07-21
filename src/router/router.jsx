@@ -6,6 +6,7 @@ import Login from "@/auth/Login";
 import Register from "@/auth/Register";
 import PetListing from "@/pages/PetListing/PetListing";
 import PetDetails from "@/pages/PetDetails/PetDetails";
+import DonationCampaigns from "@/pages/Donation/DonationCampaigns";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: "/pets/:id",
         Component: PetDetails
+      },
+      {
+        path: 'donations',
+        Component: DonationCampaigns
       },
       {
         path: 'login',
