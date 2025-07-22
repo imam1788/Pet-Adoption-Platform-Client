@@ -98,7 +98,9 @@ const PetListing = () => {
             />
             <div className="p-4 space-y-2">
               <h3 className="text-xl font-bold text-primary">{pet.name}</h3>
-              <p className="text-gray-600 text-sm">{pet.description.slice(0, 80)}...</p>
+              <p className="text-gray-600 text-sm">
+                {(pet.description || pet.shortDesc || '').slice(0, 80)}...
+              </p>
               <div className="flex flex-wrap justify-between items-center text-sm text-gray-700 mt-3">
                 <span><strong>Age:</strong> {pet.age}</span>
                 <span className='mr-8'><strong>Type:</strong> {pet.category}</span>
