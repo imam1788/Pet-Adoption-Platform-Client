@@ -7,6 +7,8 @@ import Register from "@/auth/Register";
 import PetListing from "@/pages/PetListing/PetListing";
 import PetDetails from "@/pages/PetDetails/PetDetails";
 import DonationCampaigns from "@/pages/Donation/DonationCampaigns";
+import DonationDetails from "@/pages/Donation/DonationDetails";
+import PrivateRoute from "@/routes/PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -28,6 +30,13 @@ export const router = createBrowserRouter([
       {
         path: 'donations',
         Component: DonationCampaigns
+      },
+      {
+        path: '/donations/:id',
+        element:
+          <PrivateRoute>
+            <DonationDetails></DonationDetails>
+          </PrivateRoute>
       },
       {
         path: 'login',

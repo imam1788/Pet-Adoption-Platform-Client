@@ -6,6 +6,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { Link } from "react-router";
 
 export default function Banner() {
   return (
@@ -24,8 +25,13 @@ export default function Banner() {
             <p className="mb-8 text-base md:text-lg max-w-3xl mx-auto">
               Give a furry friend a forever home and experience unconditional love.
             </p>
-            <button className="bg-white text-indigo-700 font-semibold px-6 py-3 rounded-md hover:bg-indigo-100 transition">
-              See Pets
+            <button>
+              <Link
+                to="/pets"
+                className="inline-block bg-white text-indigo-700 font-semibold px-6 py-3 rounded-md hover:bg-indigo-100 transition"
+              >
+                See Pets
+              </Link>
             </button>
           </div>
         </SwiperSlide>
@@ -36,8 +42,13 @@ export default function Banner() {
             <p className="mb-8 text-base md:text-lg max-w-3xl mx-auto">
               Help us provide food and shelter to pets in need.
             </p>
-            <button className="bg-white text-green-700 font-semibold px-6 py-3 rounded-md hover:bg-green-100 transition">
-              Donate Now
+            <button>
+              <Link
+                to="/donations"
+                className="inline-block bg-white text-green-700 font-semibold px-6 py-3 rounded-md hover:bg-green-100 transition"
+              >
+                Donate Now
+              </Link>
             </button>
           </div>
         </SwiperSlide>

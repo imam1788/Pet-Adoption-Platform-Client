@@ -1,91 +1,83 @@
-// src/providers/AuthProvider.jsx
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
-  updateProfile,
+  signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
-  signInWithPopup,
 } from "firebase/auth";
-import { auth } from "../firebase/firebase.config";
+import { auth } from "@/firebase/firebase.config";
+import axios from "axios";
 
-// Create the AuthContext
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
-// Create providers for Google and GitHub
-const googleProvider = new GoogleAuthProvider();
-const githubProvider = new GithubAuthProvider();
-
-const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+export const AuthProvider = ({ children }) => {
+  const [firebaseUser, setFirebaseUser] = useState(null);
+  const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Email/Password Register
-  const register = (email, password) => {
-    setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
-  };
+  // Initialize providers
+  const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
 
-  // Email/Password Login
-  const login = (email, password) => {
-    setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
-  };
-
-  // Logout
-  const logout = () => {
-    setLoading(true);
-    return signOut(auth);
-  };
-
-  // Google Login
+  // Function for Google Login
   const googleLogin = () => {
-    setLoading(true);
     return signInWithPopup(auth, googleProvider);
   };
 
-  // GitHub Login
+  // Function for GitHub Login
   const githubLogin = () => {
-    setLoading(true);
     return signInWithPopup(auth, githubProvider);
   };
 
-  // Update Profile (name and photo)
-  const updateUserProfile = (name, photo) => {
-    return updateProfile(auth.currentUser, {
-      displayName: name,
-      photoURL: photo,
-    });
-  };
-
-  // Check Auth State
+  // Listen to Firebase auth changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setFirebaseUser(user);
+
+      if (user?.email) {
+        try {
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/users/${user.email}`
+          );
+          setDbUser(response.data);
+        } catch (error) {
+          console.error("Failed to fetch user from DB:", error);
+          setDbUser(null);
+        }
+      } else {
+        setDbUser(null);
+      }
+
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Values to share
-  const authInfo = {
-    user,
-    loading,
-    register,
-    login,
-    logout,
-    googleLogin,
-    githubLogin,
-    updateUserProfile,
+  // Logout function
+  const logout = async () => {
+    await signOut(auth);
+    setFirebaseUser(null);
+    setDbUser(null);
   };
 
   return (
-    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{
+        firebaseUser,
+        dbUser,
+        user: dbUser || firebaseUser, // prefer DB user, fallback to Firebase user
+        loading,
+        logout,
+        googleLogin,
+        githubLogin,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };
 
-export default AuthProvider;
+// Custom hook for consuming context easily
+export const useAuth = () => useContext(AuthContext);

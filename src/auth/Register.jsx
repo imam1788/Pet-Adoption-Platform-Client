@@ -12,6 +12,9 @@ export default function Register() {
     register,
     handleSubmit,
     setValue,
+    setError,
+    clearErrors,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -19,15 +22,35 @@ export default function Register() {
   const navigate = useNavigate();
   const saveUser = useSaveUser();
 
+  // Watch the photoFile field to check if a file is selected
+  const photoFile = watch("photoFile");
+
   const onFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
       setValue("photoFile", file, { shouldValidate: true });
+      clearErrors("photoFile"); // Clear file error if any
     }
   };
 
-  // Request JWT from backend
+  const uploadImageToImgbb = async (imageFile) => {
+    const imgbbApiKey = import.meta.env.VITE_IMGBB_API_KEY;
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const res = await fetch(
+      `https://api.imgbb.com/1/upload?key=${imgbbApiKey}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await res.json();
+    return data?.data?.url;
+  };
+
   const getJWTToken = async (email) => {
     try {
       const response = await fetch("http://localhost:5000/jwt", {
@@ -46,20 +69,38 @@ export default function Register() {
 
   const onSubmit = async (data) => {
     try {
-      const photoURL = preview || "";
+      // Manual validation for photoFile because react-hook-form can't validate file inputs well
+      if (!data.photoFile) {
+        setError("photoFile", {
+          type: "manual",
+          message: "Profile image is required",
+        });
+        return;
+      }
 
+      // Upload image to imgbb
+      const imageUrl = await uploadImageToImgbb(data.photoFile);
+
+      // Create user with email/password
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
         data.password
       );
+
+      // Update user profile with displayName and photoURL
       await updateProfile(userCredential.user, {
         displayName: data.fullName,
-        photoURL,
+        photoURL: imageUrl,
       });
 
+      // Save user to backend DB
       await saveUser(userCredential.user);
+
+      // Get and save JWT token
       await getJWTToken(userCredential.user.email);
+
+      // Navigate to home or wherever you want
       navigate("/");
     } catch (error) {
       alert(error.message);
@@ -73,7 +114,7 @@ export default function Register() {
           Create an Account
         </h2>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
           {/* Profile Photo Upload */}
           <div className="flex flex-col items-center">
             <label
@@ -98,9 +139,13 @@ export default function Register() {
                 id="photoFile"
                 accept="image/*"
                 className="hidden"
+                {...register("photoFile")}
                 onChange={onFileChange}
               />
             </label>
+            {errors.photoFile && (
+              <p className="mt-1 text-sm text-red-600">{errors.photoFile.message}</p>
+            )}
           </div>
 
           {/* Full Name */}

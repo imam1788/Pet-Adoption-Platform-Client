@@ -2,6 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useRef } from 'react';
 import { FaBullseye, FaHandHoldingUsd } from 'react-icons/fa';
+import { Link } from 'react-router';
 
 const fetchCampaigns = async ({ pageParam = 1 }) => {
   const res = await axios.get(`http://localhost:5000/donation-campaigns?page=${pageParam}&limit=6`);
@@ -79,9 +80,11 @@ const DonationCampaigns = () => {
                   <FaHandHoldingUsd className="text-green-600" />
                   Donated: <span className="text-green-600">${campaign.donatedAmount}</span>
                 </div>
-                <button className="w-full bg-primary text-white py-1.5 rounded hover:bg-opacity-90">
-                  View Details
-                </button>
+                <Link to={`/donations/${campaign._id}`}>
+                  <button className="w-full bg-primary text-white py-1.5 rounded hover:bg-opacity-90">
+                    View Details
+                  </button>
+                </Link>
               </div>
             </div>
           ))

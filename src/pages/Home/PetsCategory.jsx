@@ -6,10 +6,10 @@ import rabbit from "../../assets/bunny.png";
 import fish from "../../assets/fish.png";
 
 const categories = [
-  { id: "cats", label: "Cats", image: cat, color: "from-pink-400 to-pink-600" },
-  { id: "dogs", label: "Dogs", image: dog, color: "from-blue-400 to-blue-600" },
-  { id: "rabbit", label: "Rabbit", image: rabbit, color: "from-green-400 to-green-600" },
-  { id: "fish", label: "Fish", image: fish, color: "from-purple-400 to-purple-600" },
+  { id: "Cat", label: "Cats", image: cat, color: "from-pink-400 to-pink-600" },
+  { id: "Dog", label: "Dogs", image: dog, color: "from-blue-400 to-blue-600" },
+  { id: "Rabbit", label: "Rabbit", image: rabbit, color: "from-green-400 to-green-600" },
+  { id: "Fish", label: "Fish", image: fish, color: "from-purple-400 to-purple-600" },
 ];
 
 export default function PetsCategory() {

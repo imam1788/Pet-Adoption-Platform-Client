@@ -4,15 +4,18 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import debounce from 'lodash.debounce';
 import useAxiosSecure from '@/hooks/UseAxiosSecure';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 const categories = ['All', 'Dog', 'Cat', 'Fish', 'Rabbit'];
 
 const PetListing = () => {
   const axiosSecure = useAxiosSecure();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialCategory = searchParams.get('category') || 'All';
+
   const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('All');
+  const [category, setCategory] = useState(initialCategory);
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   useEffect(() => {
@@ -33,17 +36,22 @@ const PetListing = () => {
   };
 
   const handleCategoryChange = (e) => {
-    setCategory(e.target.value);
+    const selected = e.target.value;
+    setCategory(selected);
+    setSearchParams({ category: selected });
   };
 
   const { data = {}, isLoading, isError } = useQuery({
     queryKey: ['pets', debouncedSearch, category],
     queryFn: async () => {
       const res = await axiosSecure.get('/pets', {
-        params: { search: debouncedSearch, category }
+        params: {
+          search: debouncedSearch,
+          category,
+        },
       });
       return res.data;
-    }
+    },
   });
 
   const pets = data.pets || [];
@@ -110,6 +118,9 @@ const PetListing = () => {
           </div>
         ))}
       </div>
+
+      {isLoading && <p className="text-center mt-10">Loading pets...</p>}
+      {isError && <p className="text-center mt-10 text-red-600">Failed to load pets. Try again later.</p>}
     </section>
   );
 };

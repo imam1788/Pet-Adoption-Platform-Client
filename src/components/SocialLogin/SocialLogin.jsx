@@ -12,6 +12,7 @@ export default function SocialLogin() {
   const handleGoogleLogin = async () => {
     try {
       const result = await googleLogin();
+      console.log("Google Login Result:", result.user);
       await saveUser(result.user);
       Swal.fire("Success", "Logged in with Google!", "success");
     } catch (error) {
