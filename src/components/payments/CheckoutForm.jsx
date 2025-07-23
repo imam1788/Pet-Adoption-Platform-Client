@@ -40,12 +40,15 @@ const CheckoutForm = ({ amount, campaignId }) => {
       if (result.error) {
         setError(result.error.message);
         setProcessing(false);
-      } else if (result.paymentIntent.status === 'succeeded') {
+        return;
+      }
+
+      if (result.paymentIntent.status === 'succeeded') {
         const paymentIntent = result.paymentIntent;
 
         // 3. Save donation to database
         const donationData = {
-          campaignId,
+          donationId: campaignId,
           donorName: user?.displayName,
           donorEmail: user?.email,
           amount,
@@ -54,11 +57,27 @@ const CheckoutForm = ({ amount, campaignId }) => {
           date: new Date(),
         };
 
-        await axiosSecure.post('/donations', donationData);
-
-        setSuccess('Payment successful! Thank you for your donation.');
-        setError('');
-        setProcessing(false);
+        try {
+          await axiosSecure.post('/donations', donationData);
+          setSuccess('Payment successful! Thank you for your donation.');
+          setError('');
+        } catch (donationError) {
+          // Check if error is due to paused campaign
+          if (
+            donationError.response &&
+            donationError.response.status === 403 &&
+            donationError.response.data?.error?.toLowerCase().includes('paused')
+          ) {
+            setError('Sorry, donations are currently paused for this campaign.');
+          } else {
+            setError(
+              donationError.response?.data?.error ||
+              'Failed to save donation. Please contact support.'
+            );
+          }
+        } finally {
+          setProcessing(false);
+        }
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong');

@@ -16,6 +16,7 @@ import UpdatePet from "@/pages/Dashboard/UpdatePet";
 import CreateDonation from "@/pages/Dashboard/CreateDonation";
 import MyDonationCampaigns from "@/pages/Dashboard/MyDonationCampaigns";
 import EditDonation from "@/pages/Dashboard/EditDonation";
+import MyDonations from "@/pages/Dashboard/MyDonations";
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +88,10 @@ export const router = createBrowserRouter([
         path: 'edit-campaign/:id',
         Component: EditDonation
       },
+      {
+        path: 'my-donations',
+        Component: MyDonations
+      }
     ]
   }
 ])
