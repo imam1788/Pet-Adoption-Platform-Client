@@ -96,8 +96,8 @@ const MyPets = () => {
         cell: ({ row }) => (
           <span
             className={`badge px-2 py-1 rounded ${row.original.adopted
-                ? "bg-green-500 text-white"
-                : "bg-yellow-400 text-black"
+              ? "bg-green-500 text-white"
+              : "bg-yellow-400 text-black"
               }`}
           >
             {row.original.adopted ? "Adopted" : "Not Adopted"}
@@ -156,7 +156,7 @@ const MyPets = () => {
 
   return (
     <div className="p-4" data-aos="fade-up">
-      <h2 className="text-2xl font-semibold mb-4">My Pets</h2>
+      <h2 className="text-3xl font-bold mb-6">My Pets</h2>
 
       {isLoading ? (
         <p>Loading...</p>

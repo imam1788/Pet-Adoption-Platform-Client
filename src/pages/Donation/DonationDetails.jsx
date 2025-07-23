@@ -121,7 +121,7 @@ const DonationDetails = () => {
       {/* Recommended Campaigns Section */}
       {recommended.length > 0 && (
         <section className="mt-16">
-          <h3 className="text-2xl font-semibold mb-6" data-aos="fade-up">
+          <h3 className="text-3xl text-center font-bold mb-6" data-aos="fade-up">
             Recommended Donations
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

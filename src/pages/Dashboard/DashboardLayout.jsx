@@ -10,6 +10,7 @@ const DashboardLayout = () => {
           <Link to="/dashboard/add-pet">Add Pet</Link>
           <Link to="/dashboard/my-pets">My Pets</Link>
           <Link to="/dashboard/adoption-requests">Adoption Requests</Link>
+          <Link to="/dashboard/create-campaign">Create Donation Campaign</Link>
           <Link to="/dashboard/my-donations">My Donations</Link>
           <Link to="/dashboard/my-campaigns">My Donation Campaigns</Link>
         </nav>

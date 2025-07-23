@@ -1,13 +1,14 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
-import { useState, useEffect } from "react";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { useState } from "react";
+import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import useAuth from "@/hooks/UseAuth";
 import useAxiosSecure from "@/hooks/UseAxiosSecure";
 import TiptapEditor from "./TiptapEditor";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const petCategories = [
   { value: "dog", label: "Dog" },
@@ -20,20 +21,16 @@ const petCategories = [
 const AddPet = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-
   const navigate = useNavigate();
 
   const [imagePreview, setImagePreview] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
-  // Initialize Tiptap editor with StarterKit
   const editor = useEditor({
     extensions: [StarterKit],
     content: "<p>Describe your pet here...</p>",
   });
 
-  // Formik config
   const formik = useFormik({
     initialValues: {
       petName: "",
@@ -57,14 +54,9 @@ const AddPet = () => {
       image: Yup.mixed().required("Image is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      setSuccessMessage("");
-      setTimeout(() => {
-        navigate("/dashboard/my-pets");
-      }, 2000);
       try {
         setImageUploading(true);
 
-        // Get HTML content from Tiptap editor
         const longDescHTML = editor?.getHTML() || "";
 
         // Upload image to imgbb
@@ -82,7 +74,6 @@ const AddPet = () => {
 
         const imageUrl = data.data.url;
 
-        // Create pet object with Tiptap HTML for longDesc
         const newPet = {
           name: values.petName,
           age: values.petAge,
@@ -97,18 +88,32 @@ const AddPet = () => {
           ownerName: user?.displayName,
         };
 
-        // Save to DB
         const result = await axiosSecure.post("/pets", newPet);
 
         if (result.data.insertedId) {
-          setSuccessMessage("Pet added successfully!");
+          Swal.fire({
+            title: "Success!",
+            text: "Pet added successfully!",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+
           resetForm();
           setImagePreview(null);
           editor.commands.setContent("<p>Describe your pet here...</p>");
+
+          setTimeout(() => {
+            navigate("/dashboard/my-pets");
+          }, 2000);
         }
       } catch (err) {
         console.error(err);
-        alert("Something went wrong. Please try again.");
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong. Please try again!",
+        });
       } finally {
         setImageUploading(false);
       }
@@ -240,10 +245,6 @@ const AddPet = () => {
         >
           {imageUploading ? "Uploading..." : "Add Pet"}
         </button>
-
-        {successMessage && (
-          <p className="text-green-600 font-medium">{successMessage}</p>
-        )}
       </form>
     </div>
   );
