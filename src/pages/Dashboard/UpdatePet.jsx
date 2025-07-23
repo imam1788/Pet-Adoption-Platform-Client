@@ -1,13 +1,14 @@
+import { useParams, useNavigate } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import { useState, useEffect } from "react";
-import { EditorContent, useEditor } from "@tiptap/react";
+import { useQuery } from "@tanstack/react-query";
+import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import useAuth from "@/hooks/UseAuth";
 import useAxiosSecure from "@/hooks/UseAxiosSecure";
+import useAuth from "@/hooks/UseAuth";
 import TiptapEditor from "./TiptapEditor";
-import { useNavigate } from "react-router";
 
 const petCategories = [
   { value: "dog", label: "Dog" },
@@ -17,32 +18,46 @@ const petCategories = [
   { value: "other", label: "Other" },
 ];
 
-const AddPet = () => {
-  const { user } = useAuth();
-  const axiosSecure = useAxiosSecure();
-
+const UpdatePet = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
 
   const [imagePreview, setImagePreview] = useState(null);
   const [imageUploading, setImageUploading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
 
-  // Initialize Tiptap editor with StarterKit
-  const editor = useEditor({
-    extensions: [StarterKit],
-    content: "<p>Describe your pet here...</p>",
+  // Fetch the pet data
+  const { data: petData, isLoading } = useQuery({
+    queryKey: ["pet", id],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/pets/${id}`);
+      return res.data;
+    },
   });
 
-  // Formik config
+  // TipTap editor setup
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: petData?.longDesc || "<p>Loading...</p>",
+  });
+
+  useEffect(() => {
+    if (editor && petData?.longDesc) {
+      editor.commands.setContent(petData.longDesc);
+    }
+  }, [editor, petData]);
+
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      petName: "",
-      petAge: "",
-      category: null,
-      location: "",
-      shortDesc: "",
-      longDesc: "",
-      image: null,
+      petName: petData?.name || "",
+      petAge: petData?.age || "",
+      category: petCategories.find(c => c.value === petData?.category) || null,
+      location: petData?.location || "",
+      shortDesc: petData?.shortDesc || "",
+      longDesc: petData?.longDesc || "",
+      image: null, // Will only update if new image uploaded
     },
     validationSchema: Yup.object({
       petName: Yup.string().required("Pet name is required"),
@@ -54,70 +69,57 @@ const AddPet = () => {
       location: Yup.string().required("Location is required"),
       shortDesc: Yup.string().required("Short description is required"),
       longDesc: Yup.string().required("Long description is required"),
-      image: Yup.mixed().required("Image is required"),
     }),
-    onSubmit: async (values, { resetForm }) => {
-      setSuccessMessage("");
-      setTimeout(() => {
-        navigate("/dashboard/my-pets");
-      }, 2000);
+    onSubmit: async (values) => {
       try {
         setImageUploading(true);
+        let imageUrl = petData.image;
 
-        // Get HTML content from Tiptap editor
-        const longDescHTML = editor?.getHTML() || "";
+        if (values.image) {
+          const formData = new FormData();
+          formData.append("image", values.image);
 
-        // Upload image to imgbb
-        const formData = new FormData();
-        formData.append("image", values.image);
-        const res = await fetch(
-          `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`,
-          {
-            method: "POST",
-            body: formData,
+          const res = await fetch(
+            `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+          const data = await res.json();
+          if (data.success) {
+            imageUrl = data.data.url;
+          } else {
+            throw new Error("Image upload failed");
           }
-        );
-        const data = await res.json();
-        if (!data.success) throw new Error("Image upload failed");
+        }
 
-        const imageUrl = data.data.url;
-
-        // Create pet object with Tiptap HTML for longDesc
-        const newPet = {
+        const updatedPet = {
           name: values.petName,
           age: values.petAge,
           category: values.category.value,
           location: values.location,
           shortDesc: values.shortDesc,
-          longDesc: longDescHTML,
+          longDesc: editor?.getHTML(),
           image: imageUrl,
-          adopted: false,
-          date: new Date(),
-          ownerEmail: user?.email,
-          ownerName: user?.displayName,
         };
 
-        // Save to DB
-        const result = await axiosSecure.post("/pets", newPet);
-
-        if (result.data.insertedId) {
-          setSuccessMessage("Pet added successfully!");
-          resetForm();
-          setImagePreview(null);
-          editor.commands.setContent("<p>Describe your pet here...</p>");
-        }
-      } catch (err) {
-        console.error(err);
-        alert("Something went wrong. Please try again.");
+        await axiosSecure.patch(`/pets/${id}`, updatedPet);
+        navigate("/dashboard/my-pets");
+      } catch (error) {
+        console.error("Update error:", error);
+        alert("Update failed");
       } finally {
         setImageUploading(false);
       }
     },
   });
 
+  if (isLoading || !editor) return <p>Loading...</p>;
+
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6">Add a Pet for Adoption</h2>
+      <h2 className="text-3xl font-bold mb-6">Update Pet</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-4">
         {/* Pet Name */}
@@ -127,6 +129,7 @@ const AddPet = () => {
             type="text"
             name="petName"
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.petName}
             className="w-full border px-3 py-2 rounded"
           />
@@ -142,6 +145,7 @@ const AddPet = () => {
             type="number"
             name="petAge"
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.petAge}
             className="w-full border px-3 py-2 rounded"
           />
@@ -171,6 +175,7 @@ const AddPet = () => {
             type="text"
             name="location"
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.location}
             className="w-full border px-3 py-2 rounded"
           />
@@ -186,6 +191,7 @@ const AddPet = () => {
             type="text"
             name="shortDesc"
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             value={formik.values.shortDesc}
             className="w-full border px-3 py-2 rounded"
           />
@@ -198,6 +204,7 @@ const AddPet = () => {
         <div>
           <label className="block font-medium mb-1">Long Description</label>
           <TiptapEditor
+            editor={editor}
             value={formik.values.longDesc}
             onChange={(value) => formik.setFieldValue("longDesc", value)}
           />
@@ -220,33 +227,25 @@ const AddPet = () => {
             }}
             className="w-full border px-3 py-2 rounded"
           />
-          {formik.touched.image && formik.errors.image && (
-            <p className="text-red-500">{formik.errors.image}</p>
-          )}
-          {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-32 mt-2 rounded"
-            />
+          {imagePreview ? (
+            <img src={imagePreview} alt="Preview" className="w-32 mt-2 rounded" />
+          ) : (
+            <img src={petData.image} alt="Current" className="w-32 mt-2 rounded" />
           )}
         </div>
 
-        {/* Submit */}
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={imageUploading}
           className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 disabled:opacity-50"
         >
-          {imageUploading ? "Uploading..." : "Add Pet"}
+          {imageUploading ? "Updating..." : "Update Pet"}
         </button>
-
-        {successMessage && (
-          <p className="text-green-600 font-medium">{successMessage}</p>
-        )}
       </form>
+
     </div>
   );
 };
 
-export default AddPet;
+export default UpdatePet;
