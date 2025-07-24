@@ -11,8 +11,14 @@ const AdminRoute = ({ children }) => {
     return <div className="text-center">Loading...</div>;
   }
 
-  if (!user || !isAdmin) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+  if (!user) {
+    // Not logged in
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (!isAdmin) {
+    // Logged in but not admin
+    return <Navigate to="/" replace />;
   }
 
   return children;
