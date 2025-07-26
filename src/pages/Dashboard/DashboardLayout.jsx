@@ -9,12 +9,18 @@ import {
   FaListAlt,
   FaBars,
   FaTimes,
+  FaUsers,
+  FaDog,
+  FaHandHoldingUsd,
 } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import useAuth from "@/hooks/UseAuth";
+import useAdmin from "@/hooks/UseAdmin";
 
-const links = [
-  { to: "/", label: "Dashboard Home", icon: <FaHome /> },
+const userLinks = [
+  { to: "/", label: "Go to Home", icon: <FaHome /> },
+  { to: "/dashboard", label: "Dashboard Home", icon: <FaHome /> },
   { to: "/dashboard/add-pet", label: "Add Pet", icon: <FaPlus /> },
   { to: "/dashboard/my-pets", label: "My Pets", icon: <FaPaw /> },
   { to: "/dashboard/adoption-requests", label: "Adoption Requests", icon: <FaHeart /> },
@@ -23,66 +29,103 @@ const links = [
   { to: "/dashboard/my-campaigns", label: "My Donation Campaigns", icon: <FaListAlt /> },
 ];
 
+const adminLinks = [
+  { to: "/dashboard/manage-users", label: "Manage Users", icon: <FaUsers /> },
+  { to: "/dashboard/manage-pets", label: "Manage Pets", icon: <FaDog /> },
+  { to: "/dashboard/manage-donations", label: "Manage Donations", icon: <FaHandHoldingUsd /> },
+];
+
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
+  const [isAdmin, isAdminLoading] = useAdmin();
 
   useEffect(() => {
     AOS.init({ duration: 400, easing: "ease-in-out" });
   }, []);
 
-  // Auto-close sidebar on mobile route change
   useEffect(() => {
     setSidebarOpen(false);
   }, [location]);
 
-  return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside
-        className={`
-          bg-rose-100 p-6 space-y-4 w-64 z-40
-          lg:static lg:block
-          fixed top-0 left-0 h-full
-          ${sidebarOpen ? "block" : "hidden"}
-        `}
-      >
-        <nav className="space-y-2 flex flex-col">
-          {links.map(({ to, label, icon }) => (
-            <Link
-              key={to}
-              to={to}
-              className={`flex items-center gap-3 py-2 px-3 rounded-md text-rose-900 hover:bg-rose-200 transition
-                ${location.pathname === to ? "bg-rose-300 font-semibold" : ""}
-              `}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="text-lg">{icon}</span>
-              <span>{label}</span>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+  if (isAdminLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="loading loading-spinner loading-lg text-rose-500"></span>
+      </div>
+    );
+  }
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col">
+  return (
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 left-0 h-full w-64 bg-rose-100 z-50 transition-transform duration-300 ease-in-out
+        transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0 lg:static lg:block`}
+      >
+        <div className="p-6 space-y-4 overflow-y-auto h-full sticky top-0">
+          {/* User Info */}
+          {user && (
+            <div className="flex items-center gap-3 pb-4 border-b border-rose-200">
+              <img src={user.photoURL} alt="User" className="w-10 h-10 rounded-full" />
+              <div>
+                <p className="text-rose-900 font-semibold">{user.displayName}</p>
+                <p className="text-xs text-rose-700">{user.email}</p>
+              </div>
+            </div>
+          )}
+
+          <nav className="space-y-2 flex flex-col mt-4">
+            {userLinks.map(({ to, label, icon }) => (
+              <Link
+                key={to}
+                to={to}
+                className={`flex items-center gap-3 py-2 px-3 rounded-md text-rose-900 hover:bg-rose-200 transition
+                  ${location.pathname === to ? "bg-rose-300 font-semibold" : ""}`}
+              >
+                <span className="text-lg">{icon}</span>
+                <span>{label}</span>
+              </Link>
+            ))}
+
+            {/* Admin Links */}
+            {isAdmin && (
+              <>
+                <hr className="my-3 border-rose-300" />
+                {adminLinks.map(({ to, label, icon }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className={`flex items-center gap-3 py-2 px-3 rounded-md text-rose-900 hover:bg-rose-200 transition
+                    ${location.pathname === to ? "bg-rose-300 font-semibold" : ""}`}
+                  >
+                    <span className="text-lg">{icon}</span>
+                    <span>{label}</span>
+                  </Link>
+                ))}
+              </>
+            )}
+          </nav>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col w-full">
         {/* Mobile Header */}
-        <header className="lg:hidden bg-rose-100 p-4 flex items-center justify-between">
+        <header className="lg:hidden bg-rose-100 p-4 flex items-center justify-between shadow">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             aria-label="Toggle sidebar"
-            className="text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-400"
+            className="text-rose-700 focus:outline-none"
           >
-            {sidebarOpen ? (
-              <FaTimes className="w-6 h-6" />
-            ) : (
-              <FaBars className="w-6 h-6" />
-            )}
+            {sidebarOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
           </button>
           <h1 className="text-rose-700 font-bold text-lg">Dashboard</h1>
         </header>
 
-        {/* Main content area */}
+        {/* Main Outlet Area */}
         <main className="flex-1 p-6 bg-white overflow-y-auto min-h-[calc(100vh-56px)]" data-aos="fade-up">
           <Outlet />
         </main>

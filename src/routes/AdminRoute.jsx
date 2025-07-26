@@ -1,24 +1,22 @@
-import { Navigate, useLocation } from 'react-router';
-import useAdmin from '@/hooks/useAdmin';
-import useAuth from '@/hooks/UseAuth';
+import { Navigate, useLocation } from "react-router";
+import useAdmin from "@/hooks/useAdmin";
+import useAuth from "@/hooks/UseAuth";
 
 const AdminRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [isAdmin, adminLoading] = useAdmin();
   const location = useLocation();
 
-  if (loading || adminLoading) {
+  if (authLoading || adminLoading) {
     return <div className="text-center">Loading...</div>;
   }
 
   if (!user) {
-    // Not logged in
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (!isAdmin) {
-    // Logged in but not admin
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

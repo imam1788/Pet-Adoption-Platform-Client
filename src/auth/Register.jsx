@@ -94,18 +94,36 @@ export default function Register() {
         photoURL: imageUrl,
       });
 
+      // Prepare clean user object to save in backend DB
+      const cleanUser = {
+        name: data.fullName,
+        email: data.email,
+        photoURL: imageUrl,
+        uid: userCredential.user.uid,
+        role: "user", // backend also defaults this, but explicit is better
+      };
+
       // Save user to backend DB
-      await saveUser(userCredential.user);
+      await saveUser(cleanUser);
 
       // Get and save JWT token
-      await getJWTToken(userCredential.user.email);
+      await getJWTToken(data.email);
 
       // Navigate to home or wherever you want
       navigate("/");
     } catch (error) {
-      alert(error.message);
+      console.error("Firebase signup error:", error);
+      if (error.code === "auth/email-already-in-use") {
+        setError("email", {
+          type: "manual",
+          message: "Email is already registered. Please login or use a different email.",
+        });
+      } else {
+        alert(error.message);
+      }
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">

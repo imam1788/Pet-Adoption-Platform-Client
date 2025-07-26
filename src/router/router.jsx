@@ -18,6 +18,9 @@ import MyDonationCampaigns from "@/pages/Dashboard/MyDonationCampaigns";
 import EditDonation from "@/pages/Dashboard/EditDonation";
 import MyDonations from "@/pages/Dashboard/MyDonations";
 import AdoptionRequests from "@/pages/Dashboard/AdoptionRequests";
+import AdminRoute from "@/routes/AdminRoute";
+import ManageUsers from "@/pages/Dashboard/ManageUsers";
+import ManagePets from "@/pages/Dashboard/ManagePets";
 
 export const router = createBrowserRouter([
   {
@@ -96,6 +99,17 @@ export const router = createBrowserRouter([
       {
         path: 'adoption-requests',
         Component: AdoptionRequests
+      },
+      {
+        path: 'manage-users',
+        element:
+          <AdminRoute>
+            <ManageUsers></ManageUsers>
+          </AdminRoute>
+      },
+      {
+        path: 'manage-pets',
+        Component: ManagePets
       }
     ]
   }

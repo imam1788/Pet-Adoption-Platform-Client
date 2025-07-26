@@ -36,9 +36,22 @@ export const AuthProvider = ({ children }) => {
       setFirebaseUser(user);
 
       if (user?.email) {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          console.warn("No access token found.");
+          setDbUser(null);
+          setLoading(false);
+          return;
+        }
+
         try {
           const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/users/${user.email}`
+            `${import.meta.env.VITE_API_URL}/users/${user.email}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
           setDbUser(response.data);
         } catch (error) {
@@ -54,6 +67,7 @@ export const AuthProvider = ({ children }) => {
 
     return () => unsubscribe();
   }, []);
+
 
   // Logout function
   const logout = async () => {

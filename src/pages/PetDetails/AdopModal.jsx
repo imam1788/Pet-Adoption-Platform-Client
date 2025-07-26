@@ -36,15 +36,30 @@ const AdoptModal = ({ pet, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 px-4 py-6 overflow-auto">
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-8 relative">
+    <div
+      className="fixed inset-0 z-50 flex justify-center items-center px-4 py-6 overflow-auto"
+      style={{
+        backgroundColor: "rgba(0, 0, 0, 0.25)", // lighter black overlay (25% opacity)
+        backdropFilter: "blur(4px)",           // subtle blur effect behind
+        WebkitBackdropFilter: "blur(4px)",     // Safari support
+      }}
+      onClick={onClose}
+      aria-modal="true"
+      role="dialog"
+    >
+      <div
+        className="bg-white rounded-lg shadow-lg max-w-lg w-full p-8 relative"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h2 className="text-3xl font-bold mb-6 text-center text-primary">
           Adopt {pet.name}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Name</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Name
+            </label>
             <input
               type="text"
               value={user.displayName}
@@ -54,7 +69,9 @@ const AdoptModal = ({ pet, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Email</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               value={user.email}
@@ -64,7 +81,9 @@ const AdoptModal = ({ pet, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Phone Number</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Phone Number
+            </label>
             <input
               type="text"
               placeholder="Enter your phone number"
@@ -76,7 +95,9 @@ const AdoptModal = ({ pet, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">Address</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">
+              Address
+            </label>
             <textarea
               placeholder="Enter your address"
               required

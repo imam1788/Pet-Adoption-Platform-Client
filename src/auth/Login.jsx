@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebase.config"; // your firebase config file
 import { Link, useNavigate } from "react-router";
 import SocialLogin from "@/components/SocialLogin/SocialLogin";
@@ -20,12 +20,16 @@ export default function Login() {
     try {
       const result = await signInWithEmailAndPassword(auth, data.email, data.password);
       const loggedUser = result.user;
-      await getToken(loggedUser.email); // ensure this is awaited
+
+      await getToken(loggedUser.email);
+
       navigate("/");
     } catch (error) {
+      await signOut(auth);
       alert(error.message);
     }
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
