@@ -1,12 +1,41 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## ✅ `client/README.md`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```md
+# 🐾 Pet Adoption Platform – Client
 
-## Expanding the ESLint configuration
+This is the frontend of the Pet Adoption Platform built using **React**, **Vite**, **Tailwind CSS**, and modern libraries. It connects to a REST API server and provides features like pet browsing, adoption requests, donations, and dashboards for users and admins.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🌟 Live Preview
+
+➡️ [Live Site](https://pethaven-f4d01.web.app)
+
+---
+
+## ⚙️ Tech Stack
+
+- React + Vite
+- Tailwind CSS + Shadcn UI
+- Firebase Authentication
+- TanStack Query (React Query)
+- Axios
+- Stripe for payments
+- TipTap Editor
+- React Hook Form / Formik + Yup
+- React Router
+
+---
+
+## 🔐 Authentication
+
+- Email/password login via Firebase
+- Google and GitHub social login
+- JWT token from server stored in `localStorage`
+- Role-based routing (user / admin)
+
+---
+

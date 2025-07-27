@@ -94,7 +94,7 @@ const EditDonation = () => {
         await axiosSecure.patch(`/donation-campaigns/${id}`, updatedData);
 
         Swal.fire("Success", "Donation campaign updated!", "success");
-        navigate("/dashboard/my-donations");
+        navigate("/dashboard/my-campaigns");
       } catch (error) {
         console.error("Update donation error:", error);
         Swal.fire("Error", "Failed to update donation campaign", "error");
