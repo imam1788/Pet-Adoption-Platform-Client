@@ -65,7 +65,7 @@ const ManagePets = () => {
 
   if (pets.length === 0) {
     return (
-      <div className="text-center py-20 text-rose-600 font-semibold text-lg">
+      <div className="text-center py-20 text-rose-600 dark:text-rose-300 font-semibold text-lg">
         No pets found
       </div>
     );
@@ -73,14 +73,14 @@ const ManagePets = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8" data-aos="fade-up">
-      <h2 className="text-4xl font-extrabold text-rose-600 mb-8 text-center">
+      <h2 className="text-4xl font-extrabold text-rose-600 dark:text-rose-300 mb-8 text-center">
         Manage All Pets
       </h2>
 
       {/* Desktop Grid Table */}
-      <div className="hidden md:block bg-white shadow-lg rounded-lg border border-rose-200 overflow-x-auto">
+      <div className="hidden md:block bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-rose-200 dark:border-gray-700 overflow-x-auto">
         <div
-          className="grid grid-cols-[40px_80px_1fr_1fr_100px_60px_120px] gap-4 text-rose-800 text-sm font-semibold uppercase bg-rose-100 border-b border-rose-300"
+          className="grid grid-cols-[40px_80px_1fr_1fr_100px_60px_120px] gap-4 text-rose-800 dark:text-rose-200 text-sm font-semibold uppercase bg-rose-100 dark:bg-gray-700 border-b border-rose-300 dark:border-gray-600"
           style={{ alignItems: "center" }}
         >
           <div className="text-center">#</div>
@@ -95,7 +95,7 @@ const ManagePets = () => {
         {pets.map((pet, index) => (
           <div
             key={pet._id}
-            className="grid grid-cols-[40px_80px_1fr_1fr_100px_60px_120px] gap-4 border-b border-rose-200 hover:bg-rose-50 transition-colors duration-200"
+            className="grid grid-cols-[40px_80px_1fr_1fr_100px_60px_120px] gap-4 border-b border-rose-200 dark:border-gray-700 hover:bg-rose-50 dark:hover:bg-gray-700 transition-colors duration-200"
             style={{ alignItems: "center", padding: "12px 16px" }}
           >
             <div className="text-center">{index + 1}</div>
@@ -106,13 +106,13 @@ const ManagePets = () => {
                 className="w-14 h-14 rounded-md object-cover mx-auto"
               />
             </div>
-            <div>{pet.name}</div>
-            <div className="capitalize">{pet.category}</div>
+            <div className="dark:text-gray-200">{pet.name}</div>
+            <div className="capitalize dark:text-gray-300">{pet.category}</div>
             <div className="text-center">
               <span
                 className={`badge px-3 py-1 rounded-full text-sm ${pet.status === "adopted"
-                  ? "bg-green-200 text-green-800"
-                  : "bg-yellow-200 text-yellow-800"
+                    ? "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100"
+                    : "bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100"
                   }`}
               >
                 {pet.status}
@@ -121,8 +121,8 @@ const ManagePets = () => {
             <div className="text-center">
               <button
                 className={`btn btn-sm text-white rounded-md px-2 ${pet.status === "adopted"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-green-500 hover:bg-green-600"
+                    ? "bg-yellow-500 hover:bg-yellow-600"
+                    : "bg-green-500 hover:bg-green-600"
                   }`}
                 onClick={() => handleToggleStatus(pet)}
                 aria-label="Toggle adoption status"
@@ -167,10 +167,12 @@ const ManagePets = () => {
         {pets.map((pet, index) => (
           <div
             key={pet._id}
-            className="bg-white shadow rounded-lg border border-rose-200 p-4 flex gap-4 items-center"
+            className="bg-white dark:bg-gray-800 shadow rounded-lg border border-rose-200 dark:border-gray-700 p-4 flex gap-4 items-center"
           >
             <div>
-              <span className="font-semibold text-rose-600">{index + 1}.</span>
+              <span className="font-semibold text-rose-600 dark:text-rose-300">
+                {index + 1}.
+              </span>
             </div>
             <img
               src={pet.photo}
@@ -178,12 +180,12 @@ const ManagePets = () => {
               className="w-16 h-16 rounded-md object-cover"
             />
             <div className="flex-1">
-              <h3 className="text-lg font-semibold">{pet.name}</h3>
-              <p className="capitalize text-rose-700">{pet.category}</p>
+              <h3 className="text-lg font-semibold dark:text-white">{pet.name}</h3>
+              <p className="capitalize text-rose-700 dark:text-rose-300">{pet.category}</p>
               <span
                 className={`badge px-3 py-1 rounded-full text-sm mt-1 inline-block ${pet.status === "adopted"
-                  ? "bg-green-200 text-green-800"
-                  : "bg-yellow-200 text-yellow-800"
+                    ? "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100"
+                    : "bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100"
                   }`}
               >
                 {pet.status}
@@ -193,8 +195,8 @@ const ManagePets = () => {
             <div className="flex flex-col gap-2 items-center">
               <button
                 className={`btn btn-sm text-white rounded-md px-2 ${pet.status === "adopted"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-green-500 hover:bg-green-600"
+                    ? "bg-yellow-500 hover:bg-yellow-600"
+                    : "bg-green-500 hover:bg-green-600"
                   }`}
                 onClick={() => handleToggleStatus(pet)}
                 aria-label="Toggle adoption status"

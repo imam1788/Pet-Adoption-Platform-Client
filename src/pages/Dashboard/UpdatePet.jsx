@@ -53,7 +53,7 @@ const UpdatePet = () => {
     initialValues: {
       petName: petData?.name || "",
       petAge: petData?.age || "",
-      category: petCategories.find(c => c.value === petData?.category) || null,
+      category: petCategories.find((c) => c.value === petData?.category) || null,
       location: petData?.location || "",
       shortDesc: petData?.shortDesc || "",
       longDesc: petData?.longDesc || "",
@@ -118,104 +118,129 @@ const UpdatePet = () => {
   if (isLoading || !editor) return <p>Loading...</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6">Update Pet</h2>
+    <div className="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-md shadow-md">
+      <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">Update Pet</h2>
 
       <form onSubmit={formik.handleSubmit} className="space-y-4">
         {/* Pet Name */}
         <div>
-          <label className="block font-medium">Pet Name</label>
+          <label className="block font-medium text-gray-700 dark:text-gray-300">Pet Name</label>
           <input
             type="text"
             name="petName"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.petName}
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {formik.touched.petName && formik.errors.petName && (
-            <p className="text-red-500">{formik.errors.petName}</p>
+            <p className="text-red-500 dark:text-red-400">{formik.errors.petName}</p>
           )}
         </div>
 
         {/* Pet Age */}
         <div>
-          <label className="block font-medium">Pet Age (in years)</label>
+          <label className="block font-medium text-gray-700 dark:text-gray-300">Pet Age (in years)</label>
           <input
             type="number"
             name="petAge"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.petAge}
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {formik.touched.petAge && formik.errors.petAge && (
-            <p className="text-red-500">{formik.errors.petAge}</p>
+            <p className="text-red-500 dark:text-red-400">{formik.errors.petAge}</p>
           )}
         </div>
 
         {/* Category */}
         <div>
-          <label className="block font-medium">Pet Category</label>
+          <label className="block font-medium text-gray-700 dark:text-gray-300">Pet Category</label>
           <Select
             options={petCategories}
             name="category"
             onChange={(option) => formik.setFieldValue("category", option)}
             value={formik.values.category}
+            className="react-select-container"
+            classNamePrefix="react-select"
+            styles={{
+              control: (base, state) => ({
+                ...base,
+                backgroundColor: "transparent",
+                borderColor: state.isFocused ? "#2563eb" : "#374151",
+                color: "inherit",
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: "#1f2937",
+                color: "white",
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: "white",
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isFocused ? "#2563eb" : "transparent",
+                color: "white",
+              }),
+            }}
           />
           {formik.touched.category && formik.errors.category && (
-            <p className="text-red-500">{formik.errors.category}</p>
+            <p className="text-red-500 dark:text-red-400">{formik.errors.category}</p>
           )}
         </div>
 
         {/* Location */}
         <div>
-          <label className="block font-medium">Pet Location</label>
+          <label className="block font-medium text-gray-700 dark:text-gray-300">Pet Location</label>
           <input
             type="text"
             name="location"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.location}
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {formik.touched.location && formik.errors.location && (
-            <p className="text-red-500">{formik.errors.location}</p>
+            <p className="text-red-500 dark:text-red-400">{formik.errors.location}</p>
           )}
         </div>
 
         {/* Short Description */}
         <div>
-          <label className="block font-medium">Short Description</label>
+          <label className="block font-medium text-gray-700 dark:text-gray-300">Short Description</label>
           <input
             type="text"
             name="shortDesc"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.shortDesc}
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {formik.touched.shortDesc && formik.errors.shortDesc && (
-            <p className="text-red-500">{formik.errors.shortDesc}</p>
+            <p className="text-red-500 dark:text-red-400">{formik.errors.shortDesc}</p>
           )}
         </div>
 
         {/* Long Description */}
         <div>
-          <label className="block font-medium mb-1">Long Description</label>
+          <label className="block font-medium mb-1 text-gray-700 dark:text-gray-300">Long Description</label>
           <TiptapEditor
             editor={editor}
             value={formik.values.longDesc}
             onChange={(value) => formik.setFieldValue("longDesc", value)}
+            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded"
           />
           {formik.touched.longDesc && formik.errors.longDesc && (
-            <p className="text-red-500">{formik.errors.longDesc}</p>
+            <p className="text-red-500 dark:text-red-400">{formik.errors.longDesc}</p>
           )}
         </div>
 
         {/* Image Upload */}
         <div>
-          <label className="block font-medium">Pet Image</label>
+          <label className="block font-medium text-gray-700 dark:text-gray-300">Pet Image</label>
           <input
             type="file"
             name="image"
@@ -225,7 +250,7 @@ const UpdatePet = () => {
               formik.setFieldValue("image", file);
               setImagePreview(URL.createObjectURL(file));
             }}
-            className="w-full border px-3 py-2 rounded"
+            className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-2 rounded"
           />
           {imagePreview ? (
             <img src={imagePreview} alt="Preview" className="w-32 mt-2 rounded" />
@@ -238,12 +263,11 @@ const UpdatePet = () => {
         <button
           type="submit"
           disabled={imageUploading}
-          className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 disabled:opacity-50"
+          className="bg-primary text-white dark:text-black px-6 py-2 rounded hover:bg-opacity-90 disabled:opacity-50 transition"
         >
           {imageUploading ? "Updating..." : "Update Pet"}
         </button>
       </form>
-
     </div>
   );
 };

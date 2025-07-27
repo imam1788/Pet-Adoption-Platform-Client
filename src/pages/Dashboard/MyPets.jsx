@@ -96,8 +96,8 @@ const MyPets = () => {
         cell: ({ row }) => (
           <span
             className={`badge px-2 py-1 rounded ${row.original.adopted
-              ? "bg-green-500 text-white"
-              : "bg-yellow-400 text-black"
+                ? "bg-green-500 text-white dark:bg-green-700"
+                : "bg-yellow-400 text-black dark:bg-yellow-600 dark:text-gray-900"
               }`}
           >
             {row.original.adopted ? "Adopted" : "Not Adopted"}
@@ -111,7 +111,7 @@ const MyPets = () => {
             <button
               onClick={() => handleMarkAdopted(row.original._id)}
               disabled={row.original.adopted}
-              className="btn btn-sm btn-outline"
+              className="btn btn-sm btn-outline dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
               title="Mark as Adopted"
             >
               <FaCheck />
@@ -120,7 +120,7 @@ const MyPets = () => {
               onClick={() =>
                 window.location.assign(`/dashboard/update-pet/${row.original._id}`)
               }
-              className="btn btn-sm btn-outline"
+              className="btn btn-sm btn-outline dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
               title="Edit"
             >
               <FaEdit />
@@ -155,29 +155,29 @@ const MyPets = () => {
   });
 
   return (
-    <div className="p-4" data-aos="fade-up">
+    <div
+      className="p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen"
+      data-aos="fade-up"
+    >
       <h2 className="text-3xl font-bold mb-6">My Pets</h2>
 
       {isLoading ? (
         <p>Loading...</p>
       ) : !Array.isArray(pets) || pets.length === 0 ? (
-        <p className="text-gray-500">You haven’t added any pets yet.</p>
+        <p className="text-gray-500 dark:text-gray-400">You haven’t added any pets yet.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border shadow">
-          <table className="min-w-full divide-y divide-gray-200 text-sm text-left">
-            <thead className="bg-gray-100">
+        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left">
+            <thead className="bg-gray-100 dark:bg-gray-800">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
                       onClick={header.column.getToggleSortingHandler()}
-                      className="px-4 py-3 font-semibold text-gray-700 cursor-pointer"
+                      className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 cursor-pointer select-none"
                     >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                       {header.column.getIsSorted() === "asc"
                         ? " 🔼"
                         : header.column.getIsSorted() === "desc"
@@ -188,9 +188,12 @@ const MyPets = () => {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50">
+                <tr
+                  key={row.id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-4 py-2">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -203,7 +206,7 @@ const MyPets = () => {
 
           {/* Pagination */}
           {table.getPageCount() > 1 && (
-            <div className="flex justify-between items-center mt-4 p-2">
+            <div className="flex justify-between items-center mt-4 p-2 text-gray-900 dark:text-gray-100">
               <button
                 className="btn btn-sm"
                 onClick={() => table.previousPage()}
@@ -212,8 +215,7 @@ const MyPets = () => {
                 Previous
               </button>
               <span>
-                Page {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
+                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
               </span>
               <button
                 className="btn btn-sm"

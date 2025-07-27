@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 const AllDonations = () => {
   const axiosSecure = useAxiosSecure();
 
-  // Fetch all donation campaigns (filtered from backend)
   const { data: campaigns = [], refetch, isLoading } = useQuery({
     queryKey: ["admin-donations"],
     queryFn: async () => {
@@ -16,7 +15,6 @@ const AllDonations = () => {
     },
   });
 
-  // Handle Pause / Unpause
   const handleTogglePause = async (id, currentStatus) => {
     const action = currentStatus ? "unpause" : "pause";
     const result = await Swal.fire({
@@ -39,7 +37,6 @@ const AllDonations = () => {
     }
   };
 
-  // Handle Delete
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -60,18 +57,19 @@ const AllDonations = () => {
     }
   };
 
-  if (isLoading) return <p className="text-center py-10">Loading campaigns...</p>;
+  if (isLoading)
+    return <p className="text-center py-10 text-gray-600 dark:text-gray-300">Loading campaigns...</p>;
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-rose-700 text-center">
+      <h2 className="text-3xl font-bold mb-6 text-rose-700 dark:text-rose-400 text-center">
         All Donation Campaigns
       </h2>
 
       {/* Desktop Table */}
-      <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-        <table className="min-w-full divide-y divide-gray-200 text-sm md:text-base">
-          <thead className="bg-rose-200 text-rose-900">
+      <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm md:text-base">
+          <thead className="bg-rose-200 dark:bg-rose-900 text-rose-900 dark:text-rose-100">
             <tr>
               <th className="px-4 py-3 text-left">Pet</th>
               <th className="px-4 py-3 text-right">Target</th>
@@ -81,11 +79,11 @@ const AllDonations = () => {
               <th className="px-4 py-3 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
             {campaigns.map((campaign) => (
               <tr
                 key={campaign._id}
-                className="hover:bg-gray-50 transition-colors duration-150"
+                className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
               >
                 <td className="px-4 py-3 flex items-center gap-3">
                   <img
@@ -93,36 +91,41 @@ const AllDonations = () => {
                     alt={campaign.petName}
                     className="w-10 h-10 rounded object-cover"
                   />
-                  <span className="font-medium">{campaign.petName}</span>
+                  <span className="font-medium text-gray-800 dark:text-gray-100">
+                    {campaign.petName}
+                  </span>
                 </td>
-                <td className="px-4 py-3 text-right">${campaign.targetAmount}</td>
-                <td className="px-4 py-3 text-right">${campaign.donatedAmount}</td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-200">
+                  ${campaign.targetAmount}
+                </td>
+                <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-200">
+                  ${campaign.donatedAmount}
+                </td>
+                <td className="px-4 py-3 text-center text-gray-600 dark:text-gray-300">
                   {campaign.lastDate
                     ? new Date(campaign.lastDate).toLocaleDateString()
                     : "N/A"}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-4 py-3 text-center font-semibold">
                   {campaign.paused ? (
-                    <span className="text-red-600 font-semibold">Paused</span>
+                    <span className="text-red-600 dark:text-red-400">Paused</span>
                   ) : (
-                    <span className="text-green-600 font-semibold">Active</span>
+                    <span className="text-green-600 dark:text-green-400">Active</span>
                   )}
                 </td>
                 <td className="px-4 py-3 text-center space-x-2">
                   <button
                     onClick={() => handleTogglePause(campaign._id, campaign.paused)}
-                    className={`inline-flex items-center justify-center p-1 rounded ${campaign.paused ? "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"
+                    className={`inline-flex items-center justify-center p-1 rounded ${campaign.paused
+                      ? "bg-green-500 hover:bg-green-600"
+                      : "bg-yellow-500 hover:bg-yellow-600"
                       } text-white`}
                     title={campaign.paused ? "Unpause" : "Pause"}
                   >
                     {campaign.paused ? <FaPlay size={16} /> : <FaPause size={16} />}
                   </button>
                   <Link to={`/dashboard/edit-campaign/${campaign._id}`}>
-                    <button
-                      className="bg-blue-500 text-white p-1 rounded"
-                      title="Edit"
-                    >
+                    <button className="bg-blue-500 text-white p-1 rounded" title="Edit">
                       <FaEdit size={16} />
                     </button>
                   </Link>
@@ -145,7 +148,7 @@ const AllDonations = () => {
         {campaigns.map((campaign) => (
           <div
             key={campaign._id}
-            className="bg-white border border-gray-200 rounded-lg shadow p-4 flex flex-col gap-3"
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow p-4 flex flex-col gap-3"
           >
             <div className="flex items-center gap-3">
               <img
@@ -154,16 +157,18 @@ const AllDonations = () => {
                 className="w-16 h-16 rounded object-cover flex-shrink-0"
               />
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-rose-700">
+                <h3 className="text-lg font-semibold text-rose-700 dark:text-rose-400">
                   {campaign.petName}
                 </h3>
-                <p className="text-sm text-gray-600">
-                  Target: <span className="font-medium">${campaign.targetAmount}</span>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Target:{" "}
+                  <span className="font-medium">${campaign.targetAmount}</span>
                 </p>
-                <p className="text-sm text-gray-600">
-                  Donated: <span className="font-medium">${campaign.donatedAmount}</span>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Donated:{" "}
+                  <span className="font-medium">${campaign.donatedAmount}</span>
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Last Date:{" "}
                   <span className="font-medium">
                     {campaign.lastDate
@@ -174,7 +179,9 @@ const AllDonations = () => {
                 <p className="text-sm font-semibold mt-1">
                   Status:{" "}
                   <span
-                    className={`${campaign.paused ? "text-red-600" : "text-green-600"
+                    className={`${campaign.paused
+                      ? "text-red-600 dark:text-red-400"
+                      : "text-green-600 dark:text-green-400"
                       }`}
                   >
                     {campaign.paused ? "Paused" : "Active"}
@@ -186,7 +193,9 @@ const AllDonations = () => {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => handleTogglePause(campaign._id, campaign.paused)}
-                className={`text-white p-1 rounded ${campaign.paused ? "bg-green-500 hover:bg-green-600" : "bg-yellow-500 hover:bg-yellow-600"
+                className={`text-white p-1 rounded ${campaign.paused
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-yellow-500 hover:bg-yellow-600"
                   }`}
                 title={campaign.paused ? "Unpause" : "Pause"}
                 aria-label={campaign.paused ? "Unpause campaign" : "Pause campaign"}
@@ -194,10 +203,7 @@ const AllDonations = () => {
                 {campaign.paused ? <FaPlay size={16} /> : <FaPause size={16} />}
               </button>
               <Link to={`/dashboard/edit-campaign/${campaign._id}`}>
-                <button
-                  className="bg-blue-500 text-white p-1 rounded"
-                  title="Edit"
-                >
+                <button className="bg-blue-500 text-white p-1 rounded" title="Edit">
                   <FaEdit size={16} />
                 </button>
               </Link>

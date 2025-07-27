@@ -22,11 +22,8 @@ const PetListing = () => {
     AOS.init({ duration: 800, once: false });
   }, []);
 
-  // Debounce the search input
   const debouncedSetSearch = useCallback(
-    debounce((val) => {
-      setDebouncedSearch(val);
-    }, 500),
+    debounce((val) => setDebouncedSearch(val), 500),
     []
   );
 
@@ -45,10 +42,7 @@ const PetListing = () => {
     queryKey: ['pets', debouncedSearch, category],
     queryFn: async () => {
       const res = await axiosSecure.get('/pets', {
-        params: {
-          search: debouncedSearch,
-          category,
-        },
+        params: { search: debouncedSearch, category },
       });
       return res.data;
     },
@@ -57,8 +51,10 @@ const PetListing = () => {
   const pets = data.pets || [];
 
   return (
-    <section className="px-4 sm:px-10 py-10 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold text-center mb-10 text-primary">Adoptable Pets</h2>
+    <section className="px-4 sm:px-10 py-10 bg-gray-100 dark:bg-gray-900 min-h-screen">
+      <h2 className="text-3xl font-bold text-center mb-10 text-primary dark:text-white">
+        Adoptable Pets
+      </h2>
 
       {/* Filters */}
       <div className="max-w-[50%] mx-auto flex flex-col sm:flex-row justify-between mb-8 gap-4">
@@ -67,13 +63,12 @@ const PetListing = () => {
           value={search}
           onChange={handleSearchChange}
           placeholder="Search pets by name"
-          className="border border-gray-300 rounded px-4 py-2 flex-grow focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white rounded px-4 py-2 flex-grow focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
-
         <select
           value={category}
           onChange={handleCategoryChange}
-          className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           {categories.map((cat) => (
             <option key={cat} value={cat}>
@@ -89,7 +84,7 @@ const PetListing = () => {
           <div
             key={pet._id}
             data-aos="zoom-in-up"
-            className="bg-white shadow-lg rounded-2xl overflow-hidden transition-transform hover:scale-[1.02]"
+            className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl overflow-hidden transition-transform hover:scale-[1.02]"
           >
             <img
               src={pet.image}
@@ -97,23 +92,24 @@ const PetListing = () => {
               className="w-full h-52 object-cover"
             />
             <div className="p-4 space-y-2">
-              <h3 className="text-xl font-bold text-primary">{pet.name}</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-xl font-bold text-primary dark:text-white">{pet.name}</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
                 {(pet.description || pet.shortDesc || '').slice(0, 80)}...
               </p>
-              <div className="flex flex-wrap justify-between items-center text-sm text-gray-700 mt-3">
+              <div className="flex flex-wrap justify-between items-center text-sm text-gray-700 dark:text-gray-300 mt-3">
                 <span><strong>Age:</strong> {pet.age}</span>
                 <span className='mr-8'><strong>Type:</strong> {pet.category}</span>
               </div>
-              <div className="flex justify-between items-center text-sm text-gray-700">
+              <div className="flex justify-between items-center text-sm text-gray-700 dark:text-gray-300">
                 <span><strong>Location:</strong> {pet.location}</span>
                 <span><strong>Date:</strong> {new Date(pet.date).toLocaleDateString()}</span>
               </div>
               <div className="mt-3">
                 <Link to={`/pets/${pet._id}`} className="w-full">
-                  <button className="w-full bg-primary text-white py-1.5 rounded hover:bg-opacity-90">
+                  <button className="w-full bg-primary text-white dark:text-black py-1.5 rounded hover:bg-opacity-90 transition">
                     View Details
                   </button>
+
                 </Link>
               </div>
             </div>
@@ -121,8 +117,8 @@ const PetListing = () => {
         ))}
       </div>
 
-      {isLoading && <p className="text-center mt-10">Loading pets...</p>}
-      {isError && <p className="text-center mt-10 text-red-600">Failed to load pets. Try again later.</p>}
+      {isLoading && <p className="text-center mt-10 dark:text-white">Loading pets...</p>}
+      {isError && <p className="text-center mt-10 text-red-600 dark:text-red-400">Failed to load pets. Try again later.</p>}
     </section>
   );
 };

@@ -39,49 +39,49 @@ const AdoptModal = ({ pet, onClose }) => {
     <div
       className="fixed inset-0 z-50 flex justify-center items-center px-4 py-6 overflow-auto"
       style={{
-        backgroundColor: "rgba(0, 0, 0, 0.25)", // lighter black overlay (25% opacity)
-        backdropFilter: "blur(4px)",           // subtle blur effect behind
-        WebkitBackdropFilter: "blur(4px)",     // Safari support
+        backgroundColor: "rgba(0, 0, 0, 0.25)",
+        backdropFilter: "blur(4px)",
+        WebkitBackdropFilter: "blur(4px)",
       }}
       onClick={onClose}
       aria-modal="true"
       role="dialog"
     >
       <div
-        className="bg-white rounded-lg shadow-lg max-w-lg w-full p-8 relative"
+        className="bg-white dark:bg-gray-900 rounded-lg shadow-lg max-w-lg w-full p-8 relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-3xl font-bold mb-6 text-center text-primary">
+        <h2 className="text-3xl font-bold mb-6 text-center text-primary dark:text-primary">
           Adopt {pet.name}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
               Name
             </label>
             <input
               type="text"
               value={user.displayName}
               disabled
-              className="w-full border border-gray-300 rounded-md px-4 py-3 bg-gray-100 text-gray-600 cursor-not-allowed"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 cursor-not-allowed"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
               Email
             </label>
             <input
               type="email"
               value={user.email}
               disabled
-              className="w-full border border-gray-300 rounded-md px-4 py-3 bg-gray-100 text-gray-600 cursor-not-allowed"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 cursor-not-allowed"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
               Phone Number
             </label>
             <input
@@ -90,12 +90,12 @@ const AdoptModal = ({ pet, onClose }) => {
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
+            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
               Address
             </label>
             <textarea
@@ -104,7 +104,7 @@ const AdoptModal = ({ pet, onClose }) => {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               rows={3}
-              className="w-full border border-gray-300 rounded-md px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 resize-none bg-white dark:bg-gray-800 text-black dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
@@ -112,13 +112,13 @@ const AdoptModal = ({ pet, onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
+              className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition"
+              className="px-6 py-3 bg-primary text-white dark:text-black rounded-md hover:bg-primary/90 transition"
             >
               Submit
             </button>

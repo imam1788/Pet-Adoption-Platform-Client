@@ -62,17 +62,28 @@ const AdoptionRequests = () => {
   };
 
   if (loading)
-    return <p className="text-center text-lg font-medium">Loading adoption requests...</p>;
+    return (
+      <p className="text-center text-lg font-medium dark:text-gray-300">
+        Loading adoption requests...
+      </p>
+    );
 
   if (requests.length === 0)
-    return <p className="text-center text-lg font-semibold text-gray-500">No adoption requests found.</p>;
+    return (
+      <p className="text-center text-lg font-semibold text-gray-500 dark:text-gray-400">
+        No adoption requests found.
+      </p>
+    );
 
   return (
-    <div className="p-4" data-aos="fade-up">
+    <div
+      className="p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen"
+      data-aos="fade-up"
+    >
       <h2 className="text-2xl font-bold mb-4">Adoption Requests</h2>
-      <div className="overflow-x-auto rounded-lg shadow-lg border">
+      <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
         <table className="table w-full text-sm md:text-base">
-          <thead className="bg-gray-100 text-gray-700 uppercase">
+          <thead className="bg-gray-100 text-gray-700 uppercase dark:bg-gray-800 dark:text-gray-300">
             <tr>
               <th className="py-3 px-4">Pet Name</th>
               <th className="py-3 px-4">Requester</th>
@@ -87,7 +98,7 @@ const AdoptionRequests = () => {
             {requests.map((req) => (
               <tr
                 key={req._id}
-                className="hover:bg-gray-50 transition-all duration-300 border-b"
+                className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 border-b border-gray-200 dark:border-gray-700"
               >
                 <td className="py-3 px-4">{req.petName}</td>
                 <td className="py-3 px-4">{req.userName}</td>
@@ -97,10 +108,10 @@ const AdoptionRequests = () => {
                 <td className="py-3 px-4 font-semibold capitalize">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${req.status === "pending"
-                        ? "bg-yellow-100 text-yellow-600"
+                        ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-700 dark:text-yellow-300"
                         : req.status === "accepted"
-                          ? "bg-green-100 text-green-600"
-                          : "bg-red-100 text-red-600"
+                          ? "bg-green-100 text-green-600 dark:bg-green-700 dark:text-green-300"
+                          : "bg-red-100 text-red-600 dark:bg-red-700 dark:text-red-300"
                       }`}
                   >
                     {req.status}
@@ -109,16 +120,28 @@ const AdoptionRequests = () => {
                 <td className="py-3 px-4">
                   <div className="flex gap-2 items-center">
                     <button
-                      onClick={() => req.status === "pending" && handleUpdateStatus(req._id, "accepted")}
-                      className={`btn btn-sm ${req.status === "pending" ? "bg-green-500 hover:bg-green-600 text-white" : "bg-gray-300 text-gray-400 cursor-not-allowed"}`}
+                      onClick={() =>
+                        req.status === "pending" &&
+                        handleUpdateStatus(req._id, "accepted")
+                      }
+                      className={`btn btn-sm ${req.status === "pending"
+                          ? "bg-green-500 hover:bg-green-600 text-white dark:bg-green-600 dark:hover:bg-green-700"
+                          : "bg-gray-300 text-gray-400 cursor-not-allowed dark:bg-gray-600 dark:text-gray-500"
+                        }`}
                       disabled={req.status !== "pending"}
                       title="Accept"
                     >
                       <FaCheckCircle className="text-lg" />
                     </button>
                     <button
-                      onClick={() => req.status === "pending" && handleUpdateStatus(req._id, "rejected")}
-                      className={`btn btn-sm ${req.status === "pending" ? "bg-red-500 hover:bg-red-600 text-white" : "bg-gray-300 text-gray-400 cursor-not-allowed"}`}
+                      onClick={() =>
+                        req.status === "pending" &&
+                        handleUpdateStatus(req._id, "rejected")
+                      }
+                      className={`btn btn-sm ${req.status === "pending"
+                          ? "bg-red-500 hover:bg-red-600 text-white dark:bg-red-600 dark:hover:bg-red-700"
+                          : "bg-gray-300 text-gray-400 cursor-not-allowed dark:bg-gray-600 dark:text-gray-500"
+                        }`}
                       disabled={req.status !== "pending"}
                       title="Reject"
                     >
@@ -126,7 +149,6 @@ const AdoptionRequests = () => {
                     </button>
                   </div>
                 </td>
-
               </tr>
             ))}
           </tbody>

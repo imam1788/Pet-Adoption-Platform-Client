@@ -54,14 +54,14 @@ const DonationCampaigns = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
-      <h2 className="text-4xl font-bold mb-10 text-center">Donation Campaigns</h2>
+      <h2 className="text-4xl font-bold mb-10 text-center dark:text-white">Donation Campaigns</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {data.pages.map(page =>
           page.campaigns.map(campaign => (
             <div
               key={campaign.petId}
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+              className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
               data-aos="fade-up"
             >
               <img
@@ -70,18 +70,18 @@ const DonationCampaigns = () => {
                 className="w-full h-52 object-cover"
               />
               <div className="p-5 space-y-2">
-                <h3 className="text-2xl font-semibold text-gray-800">{campaign.petName}</h3>
-                <p className="text-gray-600">{campaign.description}</p>
-                <div className="text-sm font-medium flex items-center gap-2">
+                <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">{campaign.petName}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{campaign.description}</p>
+                <div className="text-sm font-medium flex items-center gap-2 dark:text-gray-200">
                   <FaBullseye className="text-rose-500" />
                   Target: <span className="text-rose-500">${campaign.targetAmount}</span>
                 </div>
-                <div className="text-sm font-medium flex items-center gap-2">
+                <div className="text-sm font-medium flex items-center gap-2 dark:text-gray-200">
                   <FaHandHoldingUsd className="text-green-600" />
                   Donated: <span className="text-green-600">${campaign.donatedAmount}</span>
                 </div>
                 <Link to={`/donations/${campaign._id}`}>
-                  <button className="w-full bg-primary text-white py-1.5 rounded hover:bg-opacity-90">
+                  <button className="w-full bg-primary text-white dark:text-black py-1.5 rounded hover:bg-opacity-90 transition">
                     View Details
                   </button>
                 </Link>
@@ -93,7 +93,7 @@ const DonationCampaigns = () => {
 
       <div ref={observerRef} className="text-center font-semibold py-10">
         {isFetchingNextPage && <p className="text-blue-600 font-medium">Loading more...</p>}
-        {!hasNextPage && <p className="text-gray-500">All campaigns are loaded.</p>}
+        {!hasNextPage && <p className="text-gray-500 dark:text-gray-400">All campaigns are loaded.</p>}
       </div>
     </div>
   );

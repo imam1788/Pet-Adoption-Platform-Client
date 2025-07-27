@@ -84,12 +84,14 @@ const ManageUsers = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-semibold mb-6 text-rose-800">Manage Users</h2>
+      <h2 className="text-3xl font-semibold mb-6 text-rose-800 dark:text-rose-400">
+        Manage Users
+      </h2>
 
       {/* Desktop Table */}
       <div className="overflow-x-auto shadow-lg rounded-lg hidden md:block">
-        <table className="min-w-full bg-white">
-          <thead className="bg-rose-200 text-rose-900">
+        <table className="min-w-full bg-white dark:bg-gray-800">
+          <thead className="bg-rose-200 text-rose-900 dark:bg-rose-700 dark:text-rose-200">
             <tr>
               <th className="py-3 px-6 text-left">Profile</th>
               <th className="py-3 px-6 text-left">Name</th>
@@ -103,7 +105,7 @@ const ManageUsers = () => {
               <tr
                 key={user._id}
                 data-aos="fade-up"
-                className="border-b hover:bg-rose-50 transition"
+                className="border-b border-gray-200 dark:border-gray-700 hover:bg-rose-50 dark:hover:bg-rose-900 transition"
               >
                 <td className="py-3 px-6">
                   <img
@@ -112,9 +114,9 @@ const ManageUsers = () => {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                 </td>
-                <td className="py-3 px-6">{user.name || "No Name"}</td>
-                <td className="py-3 px-6">{user.email}</td>
-                <td className="py-3 px-6 text-center capitalize font-medium">
+                <td className="py-3 px-6 text-gray-900 dark:text-gray-100">{user.name || "No Name"}</td>
+                <td className="py-3 px-6 text-gray-700 dark:text-gray-300">{user.email}</td>
+                <td className="py-3 px-6 text-center capitalize font-medium text-gray-900 dark:text-gray-100">
                   {user.role || "user"}
                 </td>
                 <td className="py-3 px-6 text-center space-x-2">
@@ -149,7 +151,7 @@ const ManageUsers = () => {
         {users.map((user) => (
           <div
             key={user._id}
-            className="bg-white shadow rounded-lg border border-rose-200 p-4 flex flex-col gap-3"
+            className="bg-white dark:bg-gray-800 shadow rounded-lg border border-rose-200 dark:border-rose-700 p-4 flex flex-col gap-3"
             data-aos="fade-up"
           >
             <div className="flex items-center gap-4">
@@ -159,9 +161,13 @@ const ManageUsers = () => {
                 className="w-14 h-14 rounded-full object-cover"
               />
               <div>
-                <h3 className="text-lg font-semibold">{user.name || "No Name"}</h3>
-                <p className="text-rose-700">{user.email}</p>
-                <p className="capitalize font-medium mt-1">{user.role || "user"}</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  {user.name || "No Name"}
+                </h3>
+                <p className="text-rose-700 dark:text-rose-400">{user.email}</p>
+                <p className="capitalize font-medium mt-1 text-gray-900 dark:text-gray-100">
+                  {user.role || "user"}
+                </p>
                 {user.banned && (
                   <span className="text-red-600 font-semibold">Banned</span>
                 )}

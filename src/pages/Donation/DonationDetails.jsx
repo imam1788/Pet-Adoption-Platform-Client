@@ -17,10 +17,9 @@ const DonationDetails = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [donationAmount, setDonationAmount] = useState('');
   const [recommended, setRecommended] = useState([]);
-
   const navigate = useNavigate();
 
-  const { data: donation, isLoading } = useQuery({
+  const { data: donation, isLoading, isError } = useQuery({
     queryKey: ["donation", id],
     queryFn: async () => {
       const res = await axios.get(`http://localhost:5000/donation-campaigns/${id}`);
@@ -28,22 +27,23 @@ const DonationDetails = () => {
     },
   });
 
-  // Fetch recommended campaigns excluding current
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
+  }, []);
 
+  useEffect(() => {
     if (!donation?._id) return;
-
     axios
       .get(`http://localhost:5000/recommended-campaigns/${donation._id}`)
       .then(res => setRecommended(res.data))
       .catch(err => console.error(err));
   }, [donation]);
 
-  if (isLoading) return <p className="text-center text-lg">Loading...</p>;
+  if (isLoading) return <p className="text-center text-lg dark:text-gray-300">Loading...</p>;
+  if (isError) return <p className="text-center text-red-600 dark:text-red-400">Failed to load donation details.</p>;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
+    <div className="max-w-4xl mx-auto px-4 py-10 dark:bg-gray-900 dark:text-gray-100 min-h-screen">
       {/* Campaign Image */}
       <img
         src={donation.petImage}
@@ -53,10 +53,18 @@ const DonationDetails = () => {
       />
 
       {/* Campaign Info */}
-      <h2 className="text-3xl font-bold mt-6" data-aos="fade-up" data-aos-delay="100">
+      <h2
+        className="text-3xl font-bold mt-6"
+        data-aos="fade-up"
+        data-aos-delay="100"
+      >
         {donation.petName}
       </h2>
-      <p className="text-gray-700 my-4" data-aos="fade-up" data-aos-delay="200">
+      <p
+        className="text-gray-700 dark:text-gray-300 my-4"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
         {donation.description}
       </p>
 
@@ -78,7 +86,7 @@ const DonationDetails = () => {
       {/* Donate Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="bg-primary text-white px-6 py-2 mt-6 rounded hover:bg-opacity-90"
+        className="bg-primary text-white dark:text-black py-2 px-6 mt-7 rounded hover:bg-opacity-90 transition"
         data-aos="fade-up"
         data-aos-delay="400"
       >
@@ -87,9 +95,9 @@ const DonationDetails = () => {
 
       {/* Stripe Donation Modal */}
       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 bg-black/30 dark:bg-black/60" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="bg-white rounded-lg p-6 w-full max-w-md space-y-4">
+          <Dialog.Panel className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md space-y-4 text-gray-900 dark:text-gray-100">
             <Dialog.Title className="text-xl font-semibold">
               Donate to {donation.petName}
             </Dialog.Title>
@@ -98,7 +106,7 @@ const DonationDetails = () => {
             <input
               type="number"
               placeholder="Enter amount"
-              className="w-full border p-2 rounded"
+              className="w-full border border-gray-300 dark:border-gray-600 p-2 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={donationAmount}
               onChange={(e) => setDonationAmount(e.target.value)}
               min={1}
@@ -121,25 +129,28 @@ const DonationDetails = () => {
       {/* Recommended Campaigns Section */}
       {recommended.length > 0 && (
         <section className="mt-16">
-          <h3 className="text-3xl text-center font-bold mb-6" data-aos="fade-up">
+          <h3
+            className="text-3xl text-center font-bold mb-6"
+            data-aos="fade-up"
+          >
             Recommended Donations
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {recommended.map((camp, index) => (
               <div
                 key={camp._id}
-                className="border rounded p-4 shadow hover:shadow-lg cursor-pointer"
+                className="border border-gray-300 dark:border-gray-700 rounded p-4 shadow hover:shadow-lg cursor-pointer bg-white dark:bg-gray-800"
                 data-aos="fade-up"
                 data-aos-delay={100 * (index + 1)}
-                onClick={() => navigate(`/donations/${camp._id}`)}  // navigate on click
+                onClick={() => navigate(`/donations/${camp._id}`)}
               >
                 <img
                   src={camp.petImage}
                   alt={camp.petName}
                   className="w-full h-40 object-cover rounded"
                 />
-                <h4 className="mt-2 font-bold">{camp.petName}</h4>
-                <p className="text-sm text-gray-600">{camp.description.slice(0, 60)}...</p>
+                <h4 className="mt-2 font-bold text-gray-900 dark:text-gray-100">{camp.petName}</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{camp.description.slice(0, 60)}...</p>
                 <p className="mt-1 text-green-600 font-semibold">${camp.donatedAmount} raised</p>
               </div>
             ))}

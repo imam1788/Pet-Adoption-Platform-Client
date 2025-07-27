@@ -24,7 +24,7 @@ export default function Volunteer() {
           <img
             src={playingWithPets}
             alt="Volunteer with pets"
-            className="rounded-3xl shadow-lg w-96 h-80 ml-28 object-cover"
+            className="rounded-3xl shadow-lg w-96 h-80 md:ml-28 object-cover"
           />
         </div>
       </div>

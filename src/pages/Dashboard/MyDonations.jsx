@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import useAxiosSecure from '../../hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
 import 'aos/dist/aos.css';
 import AOS from 'aos';
+import UseAxiosSecure from '@/hooks/UseAxiosSecure';
 
 const MyDonations = () => {
-  const axiosSecure = useAxiosSecure();
+  const axiosSecure = UseAxiosSecure();
   const [donations, setDonations] = useState([]);
 
   useEffect(() => {

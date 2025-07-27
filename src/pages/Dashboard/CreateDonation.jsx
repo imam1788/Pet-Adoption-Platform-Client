@@ -186,7 +186,7 @@ const CreateDonation = () => {
         <button
           type="submit"
           disabled={imageUploading}
-          className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 disabled:opacity-50"
+          className="bg-primary text-white dark:text-black px-6 py-2 rounded hover:bg-opacity-90 disabled:opacity-50 transition"
         >
           {imageUploading ? "Uploading..." : "Create Campaign"}
         </button>

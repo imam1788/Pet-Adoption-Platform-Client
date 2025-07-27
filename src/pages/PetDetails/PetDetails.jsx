@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "@/hooks/UseAxiosSecure";
-import { useState } from "react"; // Modal component you'll build next
+import { useState } from "react";
 import AdoptModal from "./AdopModal";
 
 const PetDetails = () => {
@@ -22,12 +22,20 @@ const PetDetails = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
-      <div className="bg-white rounded shadow p-6">
-        <img src={pet.image} alt={pet.name} className="w-full h-64 object-cover rounded" />
-        <h2 className="text-3xl font-bold mt-4">{pet.name}</h2>
-        <p className="mt-2 text-gray-700">{pet.description}</p>
+      <div className="bg-white dark:bg-gray-900 rounded shadow p-6">
+        <img
+          src={pet.image}
+          alt={pet.name}
+          className="w-full h-64 object-cover rounded"
+        />
 
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <h2 className="text-3xl font-bold mt-4 text-primary dark:text-primary">
+          {pet.name}
+        </h2>
+
+        <p className="mt-2 text-gray-700 dark:text-gray-300">{pet.description}</p>
+
+        <div className="mt-4 grid grid-cols-2 gap-4 text-gray-800 dark:text-gray-300">
           <p><strong>Age:</strong> {pet.age}</p>
           <p><strong>Category:</strong> {pet.category}</p>
           <p><strong>Location:</strong> {pet.location}</p>
@@ -36,7 +44,7 @@ const PetDetails = () => {
 
         <button
           onClick={() => setShowModal(true)}
-          className="mt-6 px-6 py-2 bg-primary text-white rounded hover:bg-opacity-90"
+          className="mt-6 px-6 py-2 bg-primary text-white dark:text-black rounded hover:bg-opacity-90 transition"
         >
           Adopt
         </button>
