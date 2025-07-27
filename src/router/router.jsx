@@ -21,6 +21,7 @@ import AdoptionRequests from "@/pages/Dashboard/AdoptionRequests";
 import AdminRoute from "@/routes/AdminRoute";
 import ManageUsers from "@/pages/Dashboard/ManageUsers";
 import ManagePets from "@/pages/Dashboard/ManagePets";
+import AllDonations from "@/pages/Dashboard/AllDonations";
 
 export const router = createBrowserRouter([
   {
@@ -110,6 +111,10 @@ export const router = createBrowserRouter([
       {
         path: 'manage-pets',
         Component: ManagePets
+      },
+      {
+        path: 'manage-donations',
+        Component: AllDonations
       }
     ]
   }
