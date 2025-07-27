@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   useReactTable,
@@ -77,7 +77,7 @@ const MyPets = () => {
         header: "Photo",
         cell: ({ row }) => (
           <img
-            src={row.original.image}
+            src={row.original.image || "https://via.placeholder.com/48"}
             alt={row.original.name}
             className="w-12 h-12 object-cover rounded"
           />
@@ -96,8 +96,8 @@ const MyPets = () => {
         cell: ({ row }) => (
           <span
             className={`badge px-2 py-1 rounded ${row.original.adopted
-                ? "bg-green-500 text-white dark:bg-green-700"
-                : "bg-yellow-400 text-black dark:bg-yellow-600 dark:text-gray-900"
+              ? "bg-green-500 text-white dark:bg-green-700"
+              : "bg-yellow-400 text-black dark:bg-yellow-600 dark:text-gray-900"
               }`}
           >
             {row.original.adopted ? "Adopted" : "Not Adopted"}
@@ -154,6 +154,22 @@ const MyPets = () => {
     },
   });
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-16">
+        <span className="loading loading-spinner loading-lg text-rose-500" />
+      </div>
+    );
+  }
+
+  if (!Array.isArray(pets) || pets.length === 0) {
+    return (
+      <p className="text-center text-gray-500 dark:text-gray-400 py-20">
+        You haven’t added any pets yet.
+      </p>
+    );
+  }
+
   return (
     <div
       className="p-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen"
@@ -161,73 +177,137 @@ const MyPets = () => {
     >
       <h2 className="text-3xl font-bold mb-6">My Pets</h2>
 
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : !Array.isArray(pets) || pets.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400">You haven’t added any pets yet.</p>
-      ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left">
-            <thead className="bg-gray-100 dark:bg-gray-800">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      onClick={header.column.getToggleSortingHandler()}
-                      className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 cursor-pointer select-none"
-                    >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {header.column.getIsSorted() === "asc"
-                        ? " 🔼"
-                        : header.column.getIsSorted() === "desc"
-                          ? " 🔽"
-                          : ""}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-2">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {/* Desktop Table */}
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700 shadow">
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm text-left">
+          <thead className="bg-gray-100 dark:bg-gray-800">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300 cursor-pointer select-none"
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {header.column.getIsSorted() === "asc"
+                      ? " 🔼"
+                      : header.column.getIsSorted() === "desc"
+                        ? " 🔽"
+                        : ""}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="px-4 py-2">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-          {/* Pagination */}
-          {table.getPageCount() > 1 && (
-            <div className="flex justify-between items-center mt-4 p-2 text-gray-900 dark:text-gray-100">
-              <button
-                className="btn btn-sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </button>
-              <span>
-                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+        {/* Pagination */}
+        {table.getPageCount() > 1 && (
+          <div className="flex justify-between items-center mt-4 p-2 text-gray-900 dark:text-gray-100">
+            <button
+              className="btn btn-sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Previous
+            </button>
+            <span>
+              Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+            </span>
+            <button
+              className="btn btn-sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="block md:hidden space-y-6">
+        {pets.map((pet, index) => (
+          <div
+            key={pet._id}
+            className="bg-white dark:bg-gray-800 shadow rounded-lg border border-rose-200 dark:border-gray-700 p-4 flex gap-4 items-center"
+          >
+            <div>
+              <span className="font-semibold text-rose-600 dark:text-rose-300">
+                {index + 1}.
               </span>
-              <button
-                className="btn btn-sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
+            </div>
+            <img
+              src={pet.image || "https://via.placeholder.com/64"}
+              alt={pet.name}
+              className="w-16 h-16 rounded-md object-cover"
+            />
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold dark:text-white">{pet.name}</h3>
+              <p className="capitalize text-rose-700 dark:text-rose-300">{pet.category}</p>
+              <span
+                className={`badge px-3 py-1 rounded-full text-sm mt-1 inline-block ${pet.adopted
+                  ? "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100"
+                  : "bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100"
+                  }`}
               >
-                Next
+                {pet.adopted ? "Adopted" : "Not Adopted"}
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-2 items-center">
+              <button
+                onClick={() => handleMarkAdopted(pet._id)}
+                disabled={pet.adopted}
+                className={`btn btn-sm text-white rounded-md px-2 ${pet.adopted
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-500 hover:bg-green-600"
+                  }`}
+                aria-label="Mark as Adopted"
+                style={{ height: 32, width: 32, padding: 0, lineHeight: 1 }}
+                title={pet.adopted ? "Already Adopted" : "Mark as Adopted"}
+              >
+                <FaCheck />
+              </button>
+
+              <button
+                onClick={() => window.location.assign(`/dashboard/update-pet/${pet._id}`)}
+                className="btn btn-sm bg-blue-500 text-white hover:bg-blue-600 rounded-md flex items-center justify-center"
+                aria-label="Edit pet"
+                style={{ height: 32, width: 32, padding: 0, lineHeight: 1 }}
+                title="Edit"
+              >
+                <FaEdit />
+              </button>
+
+              <button
+                onClick={() => handleDelete(pet._id)}
+                className="btn btn-sm bg-red-500 text-white hover:bg-red-600 rounded-md flex items-center justify-center"
+                aria-label="Delete pet"
+                style={{ height: 32, width: 32, padding: 0, lineHeight: 1 }}
+                title="Delete"
+              >
+                <FaTrashAlt />
               </button>
             </div>
-          )}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

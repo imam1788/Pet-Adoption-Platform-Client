@@ -43,7 +43,7 @@ const ManagePets = () => {
     });
 
     if (result.isConfirmed) {
-      await axiosSecure.delete(`/pets/${id}`);
+      await axiosSecure.delete(`/admin/pets/${id}`);
       Swal.fire("Deleted!", "Pet has been removed.", "success");
       refetch();
     }
@@ -111,8 +111,8 @@ const ManagePets = () => {
             <div className="text-center">
               <span
                 className={`badge px-3 py-1 rounded-full text-sm ${pet.status === "adopted"
-                    ? "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100"
-                    : "bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100"
+                  ? "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100"
+                  : "bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100"
                   }`}
               >
                 {pet.status}
@@ -121,8 +121,8 @@ const ManagePets = () => {
             <div className="text-center">
               <button
                 className={`btn btn-sm text-white rounded-md px-2 ${pet.status === "adopted"
-                    ? "bg-yellow-500 hover:bg-yellow-600"
-                    : "bg-green-500 hover:bg-green-600"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-green-500 hover:bg-green-600"
                   }`}
                 onClick={() => handleToggleStatus(pet)}
                 aria-label="Toggle adoption status"
@@ -184,8 +184,8 @@ const ManagePets = () => {
               <p className="capitalize text-rose-700 dark:text-rose-300">{pet.category}</p>
               <span
                 className={`badge px-3 py-1 rounded-full text-sm mt-1 inline-block ${pet.status === "adopted"
-                    ? "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100"
-                    : "bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100"
+                  ? "bg-green-200 text-green-800 dark:bg-green-700 dark:text-green-100"
+                  : "bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-100"
                   }`}
               >
                 {pet.status}
@@ -195,8 +195,8 @@ const ManagePets = () => {
             <div className="flex flex-col gap-2 items-center">
               <button
                 className={`btn btn-sm text-white rounded-md px-2 ${pet.status === "adopted"
-                    ? "bg-yellow-500 hover:bg-yellow-600"
-                    : "bg-green-500 hover:bg-green-600"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-green-500 hover:bg-green-600"
                   }`}
                 onClick={() => handleToggleStatus(pet)}
                 aria-label="Toggle adoption status"
