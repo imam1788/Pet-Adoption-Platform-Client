@@ -22,7 +22,6 @@ export default function Register() {
   const navigate = useNavigate();
   const saveUser = useSaveUser();
 
-  // Watch the photoFile field to check if a file is selected
   const photoFile = watch("photoFile");
 
   const onFileChange = (e) => {
@@ -30,7 +29,7 @@ export default function Register() {
     if (file) {
       setPreview(URL.createObjectURL(file));
       setValue("photoFile", file, { shouldValidate: true });
-      clearErrors("photoFile"); // Clear file error if any
+      clearErrors("photoFile");
     }
   };
 
@@ -53,7 +52,7 @@ export default function Register() {
 
   const getJWTToken = async (email) => {
     try {
-      const response = await fetch("https://pet-adoption-server-mu.vercel.app/jwt", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/jwt`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

@@ -11,6 +11,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+const backendUrl = import.meta.env.VITE_API_URL;
 
 const DonationDetails = () => {
   const { id } = useParams();
@@ -22,7 +23,7 @@ const DonationDetails = () => {
   const { data: donation, isLoading, isError } = useQuery({
     queryKey: ["donation", id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:5000/donation-campaigns/${id}`);
+      const res = await axios.get(`${backendUrl}/donation-campaigns/${id}`);
       return res.data;
     },
   });
@@ -34,7 +35,7 @@ const DonationDetails = () => {
   useEffect(() => {
     if (!donation?._id) return;
     axios
-      .get(`http://localhost:5000/recommended-campaigns/${donation._id}`)
+      .get(`${backendUrl}/recommended-campaigns/${donation._id}`)
       .then(res => setRecommended(res.data))
       .catch(err => console.error(err));
   }, [donation]);

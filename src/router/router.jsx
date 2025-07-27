@@ -38,7 +38,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "/pets/:id",
-        Component: PetDetails
+        element:
+          <PrivateRoute>
+            <PetDetails></PetDetails>
+          </PrivateRoute>
       },
       {
         path: 'donations',

@@ -5,7 +5,7 @@ import { FaBullseye, FaHandHoldingUsd } from 'react-icons/fa';
 import { Link } from 'react-router';
 
 const fetchCampaigns = async ({ pageParam = 1 }) => {
-  const res = await axios.get(`http://localhost:5000/donation-campaigns?page=${pageParam}&limit=6`);
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/donation-campaigns?page=${pageParam}&limit=6`);
   return res.data;
 };
 

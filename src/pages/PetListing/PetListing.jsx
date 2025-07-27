@@ -1,15 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import debounce from 'lodash.debounce';
-import useAxiosSecure from '@/hooks/UseAxiosSecure';
+import axios from 'axios';
 import { Link, useSearchParams } from 'react-router';
 
 const categories = ['All', 'Dog', 'Cat', 'Fish', 'Rabbit'];
 
 const PetListing = () => {
-  const axiosSecure = useAxiosSecure();
+  const axiosPublic = axios.create({
+    baseURL: import.meta.env.VITE_API_URL,
+  });
+
 
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get('category') || 'All';
@@ -38,17 +41,48 @@ const PetListing = () => {
     setSearchParams({ category: selected });
   };
 
-  const { data = {}, isLoading, isError } = useQuery({
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
     queryKey: ['pets', debouncedSearch, category],
-    queryFn: async () => {
-      const res = await axiosSecure.get('/pets', {
-        params: { search: debouncedSearch, category },
+    queryFn: async ({ pageParam = 1 }) => {
+      const res = await axiosPublic.get('/pets', {
+        params: {
+          search: debouncedSearch,
+          category,
+          page: pageParam,
+          limit: 9,
+        },
       });
       return res.data;
     },
+    getNextPageParam: (lastPage, allPages) => {
+      const totalFetched = allPages.flatMap(p => p.pets).length;
+      return totalFetched < lastPage.total ? allPages.length + 1 : undefined;
+    },
   });
 
-  const pets = data.pets || [];
+  const pets = data?.pages.flatMap(page => page.pets) || [];
+
+  // Infinite scroll trigger
+  useEffect(() => {
+    const onScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
+        hasNextPage &&
+        !isFetchingNextPage
+      ) {
+        fetchNextPage();
+      }
+    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   return (
     <section className="px-4 sm:px-10 py-10 bg-gray-100 dark:bg-gray-900 min-h-screen">
@@ -109,7 +143,6 @@ const PetListing = () => {
                   <button className="w-full bg-primary text-white dark:text-black py-1.5 rounded hover:bg-opacity-90 transition">
                     View Details
                   </button>
-
                 </Link>
               </div>
             </div>
@@ -119,6 +152,10 @@ const PetListing = () => {
 
       {isLoading && <p className="text-center mt-10 dark:text-white">Loading pets...</p>}
       {isError && <p className="text-center mt-10 text-red-600 dark:text-red-400">Failed to load pets. Try again later.</p>}
+      {isFetchingNextPage && <p className="text-center mt-6 dark:text-white">Loading more pets...</p>}
+      {!hasNextPage && !isLoading && (
+        <p className="text-center mt-6 text-gray-500 dark:text-gray-400">No more pets to show.</p>
+      )}
     </section>
   );
 };
