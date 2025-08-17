@@ -72,7 +72,7 @@ const ManagePets = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8" data-aos="fade-up">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       <h2 className="text-4xl font-extrabold text-rose-600 dark:text-rose-300 mb-8 text-center">
         Manage All Pets
       </h2>
@@ -168,6 +168,7 @@ const ManagePets = () => {
           <div
             key={pet._id}
             className="bg-white dark:bg-gray-800 shadow rounded-lg border border-rose-200 dark:border-gray-700 p-4 flex gap-4 items-center"
+            data-aos="fade-up"
           >
             <div>
               <span className="font-semibold text-rose-600 dark:text-rose-300">

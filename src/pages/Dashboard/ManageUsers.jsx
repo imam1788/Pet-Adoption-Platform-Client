@@ -104,7 +104,6 @@ const ManageUsers = () => {
             {users.map((user) => (
               <tr
                 key={user._id}
-                data-aos="fade-up"
                 className="border-b border-gray-200 dark:border-gray-700 hover:bg-rose-50 dark:hover:bg-rose-900 transition"
               >
                 <td className="py-3 px-6">

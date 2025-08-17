@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, LogOut, LayoutDashboard, User } from "lucide-react";
 import logo from "../../assets/adoption.png";
 import useAuth from "@/hooks/UseAuth";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
@@ -13,29 +13,54 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { user, logout } = useAuth();
 
+  // Logout
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate("/");
   };
 
-  const navItems = [
-    { label: "Home", path: "/" },
+  // Scroll to top for Home
+  const handleHomeClick = () => {
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate("/");
+    }
+    setMobile(false);
+  };
+
+  // Scroll to About section
+  const handleScrollToAbout = () => {
+    navigate("/", { state: { scrollToSection: "about" } });
+    setMobile(false);
+  };
+
+  // Public nav items
+  const publicNavItems = [
+    { label: "Home", action: handleHomeClick },
     { label: "Pet Listing", path: "/pets" },
     { label: "Donation Campaigns", path: "/donations" },
+    { label: "About", action: handleScrollToAbout },
   ];
+
+  // Private nav items (logged-in users)
+  const privateNavItems = user
+    ? [...publicNavItems, { label: "Dashboard", path: "/dashboard" }]
+    : publicNavItems;
 
   const isActive = (path) => location.pathname === path;
 
-  const NavButton = ({ path, label }) => (
+  const NavButton = ({ path, label, action }) => (
     <button
       onClick={() => {
-        navigate(path);
+        if (action) action();
+        else navigate(path);
         setMobile(false);
       }}
-      className={`relative font-medium px-2 py-1 text-gray-700 dark:text-gray-200 transition after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-primary after:transition-width ${isActive(path)
-          ? "text-primary after:w-full"
-          : "after:w-0 hover:after:w-full"
-        }`}
+      className={`relative font-medium px-2 py-1 transition
+        text-gray-700 dark:text-gray-200
+        after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-primary after:transition-all
+        ${isActive(path) ? "text-primary after:w-full" : "after:w-0 hover:after:w-full"}`}
     >
       {label}
     </button>
@@ -46,7 +71,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <button
-          onClick={() => navigate("/")}
+          onClick={handleHomeClick}
           className="flex items-center gap-2 focus:outline-none"
         >
           <img src={logo} alt="PetAdopt Logo" className="w-8 h-8" />
@@ -58,8 +83,8 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-8">
-          {navItems.map((item) => (
-            <NavButton key={item.path} {...item} />
+          {privateNavItems.map((item) => (
+            <NavButton key={item.label} {...item} />
           ))}
         </nav>
 
@@ -78,12 +103,12 @@ export default function Navbar() {
                 <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-md z-50">
                   <button
                     onClick={() => {
-                      navigate("/dashboard");
+                      navigate("/profile");
                       setDropdownOpen(false);
                     }}
                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-sm text-gray-800 dark:text-gray-200"
                   >
-                    <LayoutDashboard className="w-4 h-4" /> Dashboard
+                    <User className="w-4 h-4" /> My Profile
                   </button>
                   <button
                     onClick={handleLogout}
@@ -96,11 +121,7 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate("/login")}
-              >
+              <Button variant="ghost" size="sm" onClick={() => navigate("/login")}>
                 Login
               </Button>
               <Button size="sm" onClick={() => navigate("/register")}>
@@ -109,10 +130,11 @@ export default function Navbar() {
             </>
           )}
         </div>
+
+        {/* Theme Toggle + Hamburger for Mobile */}
         <div className="md:hidden ml-44">
-          <ThemeToggle></ThemeToggle>
+          <ThemeToggle />
         </div>
-        {/* Mobile Hamburger */}
         <div className="md:hidden">
           <Button
             variant="ghost"
@@ -128,8 +150,21 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {mobile && (
         <div className="md:hidden flex flex-col bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-6 pb-4 space-y-3">
-          {navItems.map((item) => (
-            <NavButton key={item.path} {...item} />
+          {privateNavItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={() => {
+                if (item.action) item.action();
+                else navigate(item.path);
+                setMobile(false);
+              }}
+              className={`relative font-medium px-2 py-1 transition
+                text-gray-700 dark:text-gray-200
+                after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-primary after:transition-all
+                ${isActive(item.path) ? "text-primary after:w-full" : "after:w-0 hover:after:w-full"}`}
+            >
+              {item.label}
+            </button>
           ))}
           {user ? (
             <>
@@ -137,11 +172,11 @@ export default function Navbar() {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  navigate("/dashboard");
+                  navigate("/profile");
                   setMobile(false);
                 }}
               >
-                Dashboard
+                My Profile
               </Button>
               <Button
                 variant="destructive"

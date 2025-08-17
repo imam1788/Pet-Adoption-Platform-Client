@@ -71,7 +71,7 @@ const DashboardLayout = () => {
             <div className="flex items-center gap-3 pb-4 border-b border-rose-200 dark:border-rose-700">
               <img src={user.photoURL} alt="User" className="w-10 h-10 rounded-full" />
               <div>
-                <p className="text-rose-900 dark:text-rose-200 font-semibold">{user.displayName}</p>
+                <p className="text-rose-900 dark:text-rose-200 font-semibold">{user.name}</p>
                 <p className="text-xs text-rose-700 dark:text-rose-300">{user.email}</p>
               </div>
             </div>

@@ -17,7 +17,7 @@ const AdoptModal = ({ pet, onClose }) => {
       petId: pet._id,
       petName: pet.name,
       petImage: pet.image,
-      userName: user.displayName,
+      userName: user.name,
       email: user.email,
       phone,
       address,
@@ -62,7 +62,7 @@ const AdoptModal = ({ pet, onClose }) => {
             </label>
             <input
               type="text"
-              value={user.displayName}
+              value={user.name}
               disabled
               className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 cursor-not-allowed"
             />

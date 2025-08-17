@@ -67,7 +67,7 @@ const CreateDonation = () => {
           Swal.fire("Success", "Donation campaign created!", "success");
           resetForm();
           setImagePreview(null);
-          navigate("/dashboard/my-donations");
+          navigate("/dashboard/my-campaigns");
         }
 
         setImageUploading(false);

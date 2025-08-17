@@ -1,20 +1,43 @@
-// src/components/SocialLogin/SocialLogin.jsx
 import React, { useContext } from "react";
 import { AuthContext } from "@/providers/AuthProvider";
 import Swal from "sweetalert2";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import useSaveUser from "@/hooks/UseSaveUser";
+import { useNavigate } from "react-router";
 
 export default function SocialLogin() {
   const { googleLogin, githubLogin } = useContext(AuthContext);
   const saveUser = useSaveUser();
+  const navigate = useNavigate();
+
+  const fetchAndStoreJwt = async (email) => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/jwt`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to get token");
+      }
+      const data = await res.json();
+      localStorage.setItem("access_token", data.token);
+    } catch (error) {
+      console.error("JWT fetch error:", error);
+      throw error;
+    }
+  };
 
   const handleGoogleLogin = async () => {
     try {
       const result = await googleLogin();
-      console.log("Google Login Result:", result.user);
-      await saveUser(result.user);
+      const user = result.user;
+
+      await saveUser(user); // Save user to DB
+      await fetchAndStoreJwt(user.email); // Get and store JWT
+
       Swal.fire("Success", "Logged in with Google!", "success");
+      navigate("/");
     } catch (error) {
       Swal.fire("Error", error.message, "error");
     }
@@ -23,8 +46,13 @@ export default function SocialLogin() {
   const handleGithubLogin = async () => {
     try {
       const result = await githubLogin();
-      await saveUser(result.user);
+      const user = result.user;
+
+      await saveUser(user); // Save user to DB
+      await fetchAndStoreJwt(user.email); // Get and store JWT
+
       Swal.fire("Success", "Logged in with GitHub!", "success");
+      navigate("/");
     } catch (error) {
       if (error.code === "auth/account-exists-with-different-credential") {
         const email = error.customData.email;
@@ -38,7 +66,6 @@ export default function SocialLogin() {
       }
     }
   };
-
 
   return (
     <div className="flex flex-col justify-center items-center gap-6 mt-6">
