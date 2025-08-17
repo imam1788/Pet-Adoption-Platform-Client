@@ -12,6 +12,8 @@ import {
   FaUsers,
   FaDog,
   FaHandHoldingUsd,
+  FaChartPie,
+  FaUser,
 } from "react-icons/fa";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -20,13 +22,14 @@ import useAdmin from "@/hooks/UseAdmin";
 
 const userLinks = [
   { to: "/", label: "Go to Home", icon: <FaHome /> },
-  { to: "/dashboard", label: "Dashboard Home", icon: <FaHome /> },
+  { to: "/dashboard/overview", label: "Overview", icon: <FaChartPie /> },
   { to: "/dashboard/add-pet", label: "Add Pet", icon: <FaPlus /> },
   { to: "/dashboard/my-pets", label: "My Pets", icon: <FaPaw /> },
   { to: "/dashboard/adoption-requests", label: "Adoption Requests", icon: <FaHeart /> },
   { to: "/dashboard/create-campaign", label: "Create Donation Campaign", icon: <FaDonate /> },
   { to: "/dashboard/my-donations", label: "My Donations", icon: <FaListAlt /> },
   { to: "/dashboard/my-campaigns", label: "My Donation Campaigns", icon: <FaListAlt /> },
+   { to: "/dashboard/profile", label: "Profile", icon: <FaUser /> },
 ];
 
 const adminLinks = [
@@ -52,10 +55,18 @@ const DashboardLayout = () => {
   if (isAdminLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-white dark:bg-gray-900">
-        <span className="loading loading-spinner loading-lg text-rose-500"></span>
+        <div className="flex flex-col items-center space-y-3">
+          <div className="flex space-x-2">
+            <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce"></span>
+            <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-200"></span>
+            <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-400"></span>
+          </div>
+          <p className="text-gray-700 dark:text-white font-medium">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
+
 
   return (
     <div className="flex h-screen overflow-hidden bg-white dark:bg-gray-900">
@@ -71,7 +82,7 @@ const DashboardLayout = () => {
             <div className="flex items-center gap-3 pb-4 border-b border-rose-200 dark:border-rose-700">
               <img src={user.photoURL} alt="User" className="w-10 h-10 rounded-full" />
               <div>
-                <p className="text-rose-900 dark:text-rose-200 font-semibold">{user.name}</p>
+                <p className="text-rose-900 dark:text-rose-200 font-semibold">{user.displayName}</p>
                 <p className="text-xs text-rose-700 dark:text-rose-300">{user.email}</p>
               </div>
             </div>
