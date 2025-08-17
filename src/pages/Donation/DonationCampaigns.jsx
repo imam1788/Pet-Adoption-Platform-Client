@@ -49,8 +49,20 @@ const DonationCampaigns = () => {
   }, [fetchNextPage, hasNextPage]);
 
   if (status === 'pending') {
-    return <p className="text-center mt-10 text-xl font-medium">Loading...</p>;
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen space-y-4">
+        <div className="flex space-x-2">
+          <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce"></span>
+          <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-200"></span>
+          <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-400"></span>
+        </div>
+        <p className="text-gray-700 dark:text-white text-lg font-semibold">
+          Loading donation campaigns...
+        </p>
+      </div>
+    );
   }
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
@@ -91,10 +103,43 @@ const DonationCampaigns = () => {
         )}
       </div>
 
-      <div ref={observerRef} className="text-center font-semibold py-10">
-        {isFetchingNextPage && <p className="text-blue-600 font-medium">Loading more...</p>}
-        {!hasNextPage && <p className="text-gray-500 dark:text-gray-400">All campaigns are loaded.</p>}
+      <div ref={observerRef} className="flex flex-col items-center py-10 space-y-2">
+        {isFetchingNextPage && (
+          <div className="flex flex-col items-center space-y-2">
+            <div className="flex space-x-2">
+              <span className="w-5 h-5 bg-primary dark:bg-white rounded-full animate-bounce"></span>
+              <span className="w-5 h-5 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-200"></span>
+              <span className="w-5 h-5 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-400"></span>
+            </div>
+            <p className="text-gray-700 dark:text-white text-sm font-medium">
+              Loading more generous campaigns...
+            </p>
+          </div>
+        )}
+
+        {!hasNextPage && (
+          <div className="flex flex-col items-center space-y-2">
+            <svg
+              className="w-12 h-12 text-gray-400 dark:text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 8l7.89 7.89a3 3 0 004.24 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium text-center">
+              All campaigns are loaded. Thanks for supporting pets!
+            </p>
+          </div>
+        )}
       </div>
+
     </div>
   );
 };

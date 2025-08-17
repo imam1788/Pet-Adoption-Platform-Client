@@ -118,28 +118,30 @@ const PetListing = () => {
           <div
             key={pet._id}
             data-aos="zoom-in-up"
-            className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl overflow-hidden transition-transform hover:scale-[1.02]"
+            className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl overflow-hidden transition-transform hover:scale-[1.02] h-[450px] flex flex-col"
           >
             <img
               src={pet.image}
               alt={pet.name}
               className="w-full h-52 object-cover"
             />
-            <div className="p-4 space-y-2">
-              <h3 className="text-xl font-bold text-primary dark:text-white">{pet.name}</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                {(pet.description || pet.shortDesc || '').slice(0, 80)}...
-              </p>
-              <div className="flex flex-wrap justify-between items-center text-sm text-gray-700 dark:text-gray-300 mt-3">
-                <span><strong>Age:</strong> {pet.age}</span>
-                <span className='mr-8'><strong>Type:</strong> {pet.category}</span>
+            <div className="p-4 flex flex-col justify-between flex-grow">
+              <div>
+                <h3 className="text-xl font-bold text-primary dark:text-white">{pet.name}</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  {(pet.description || pet.shortDesc || '').slice(0, 80)}...
+                </p>
               </div>
-              <div className="flex justify-between items-center text-sm text-gray-700 dark:text-gray-300">
-                <span><strong>Location:</strong> {pet.location}</span>
-                <span><strong>Date:</strong> {new Date(pet.date).toLocaleDateString()}</span>
-              </div>
-              <div className="mt-3">
-                <Link to={`/pets/${pet._id}`} className="w-full">
+              <div className="mt-3 flex flex-col justify-between h-full">
+                <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
+                  <span><strong>Age:</strong> {pet.age}</span>
+                  <span><strong>Type:</strong> {pet.category}</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300 mt-1">
+                  <span><strong>Location:</strong> {pet.location}</span>
+                  <span><strong>Date:</strong> {new Date(pet.date).toLocaleDateString()}</span>
+                </div>
+                <Link to={`/pets/${pet._id}`} className="mt-3">
                   <button className="w-full bg-primary text-white dark:text-black py-1.5 rounded hover:bg-opacity-90 transition">
                     View Details
                   </button>
@@ -147,15 +149,87 @@ const PetListing = () => {
               </div>
             </div>
           </div>
+
         ))}
       </div>
 
-      {isLoading && <p className="text-center mt-10 dark:text-white">Loading pets...</p>}
-      {isError && <p className="text-center mt-10 text-red-600 dark:text-red-400">Failed to load pets. Try again later.</p>}
-      {isFetchingNextPage && <p className="text-center mt-6 dark:text-white">Loading more pets...</p>}
-      {!hasNextPage && !isLoading && (
-        <p className="text-center mt-6 text-gray-500 dark:text-gray-400">No more pets to show.</p>
+      {isLoading && (
+        <div className="flex flex-col justify-center items-center mt-20 space-y-4">
+          <div className="flex space-x-2">
+            <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce"></span>
+            <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-200"></span>
+            <span className="w-6 h-6 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-400"></span>
+          </div>
+          <p className="text-gray-700 dark:text-white text-lg font-semibold">
+            Loading adorable pets...
+          </p>
+        </div>
       )}
+
+
+      {isError && (
+        <div className="flex flex-col items-center mt-20 space-y-4">
+          <svg
+            className="w-16 h-16 text-red-500 dark:text-red-400 animate-shake"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M18.364 5.636l-12.728 12.728M5.636 5.636l12.728 12.728"
+            />
+          </svg>
+          <p className="text-center text-red-600 dark:text-red-400 text-lg font-semibold">
+            Oops! Failed to load pets. Please try again later.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-red-500 hover:bg-red-600 text-white dark:text-black px-4 py-2 rounded shadow"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {isFetchingNextPage && (
+        <div className="flex flex-col items-center mt-10 space-y-2">
+          <div className="flex space-x-2">
+            <span className="w-5 h-5 bg-primary dark:bg-white rounded-full animate-bounce"></span>
+            <span className="w-5 h-5 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-200"></span>
+            <span className="w-5 h-5 bg-primary dark:bg-white rounded-full animate-bounce animation-delay-400"></span>
+          </div>
+          <p className="text-gray-700 dark:text-white text-sm font-medium">
+            Loading more adorable pets...
+          </p>
+        </div>
+      )}
+
+      {!hasNextPage && !isLoading && (
+        <div className="flex flex-col items-center mt-10 space-y-2">
+          <svg
+            className="w-12 h-12 text-gray-400 dark:text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 8l7.89 7.89a3 3 0 004.24 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
+          </svg>
+          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium text-center">
+            No more pets to show. Check back soon for more furry friends!
+          </p>
+        </div>
+      )}
+
     </section>
   );
 };
