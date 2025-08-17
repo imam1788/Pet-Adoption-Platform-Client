@@ -10,7 +10,7 @@ export default function Volunteer() {
       >
         {/* Text Side */}
         <div className="md:w-1/2" data-aos="fade-right" data-aos-delay="200">
-          <h2 className="text-4xl font-extrabold mb-6">Become a Volunteer</h2>
+          <h2 className="text-4xl font-extrabold mb-6 text-cyan-950">Become a Volunteer</h2>
           <p className="mb-6 text-lg leading-relaxed">
             Want to help animals but can’t adopt? You can still make a big impact by volunteering your time. From helping at adoption events to fostering pets, there's a role for everyone.
           </p>

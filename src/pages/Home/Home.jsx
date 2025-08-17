@@ -6,6 +6,10 @@ import CallToAction from "./CallToAction";
 import AboutUs from "./AboutUs";
 import WhyAdopt from "./WhyAdopt";
 import Volunteer from "./Volunteer";
+import Testimonials from "./Testimonials";
+import AdoptionProcess from "./AdoptionProcess";
+import FAQ from "./FAQ";
+import Partners from "./Partners";
 
 const Home = () => {
   const location = useLocation();
@@ -30,7 +34,15 @@ const Home = () => {
         <AboutUs />
       </div>
       <WhyAdopt />
-      <Volunteer />
+      <section id="volunteer">
+        <Volunteer></Volunteer>
+      </section>
+      <AdoptionProcess></AdoptionProcess>
+      <Testimonials></Testimonials>
+      <section id="faq">
+        <FAQ></FAQ>
+      </section>
+      <Partners></Partners>
     </div>
   );
 };

@@ -8,7 +8,7 @@ export default function WhyAdopt() {
         data-aos="fade-up"
         data-aos-delay="100"
       >
-        <h2 className="text-4xl font-extrabold mb-6 text-gray-800 dark:text-white">
+        <h2 className="text-4xl font-extrabold mb-6 text-cyan-950 dark:text-cyan-400">
           Why Adopt From Us?
         </h2>
         <p

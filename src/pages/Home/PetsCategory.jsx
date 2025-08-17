@@ -16,7 +16,7 @@ export default function PetsCategory() {
   return (
     <section className="max-w-screen-xl mx-auto px-6 py-16">
       <h2
-        className="text-4xl font-bold mb-12 text-center text-gray-800 dark:text-gray-100"
+        className="text-4xl font-bold mb-12 text-center text-cyan-950 dark:text-cyan-400"
         data-aos="fade-up"
       >
         Explore Pet Categories

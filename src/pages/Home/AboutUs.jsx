@@ -8,7 +8,7 @@ export default function AboutUs() {
       data-aos="fade-up"
     >
       <h2
-        className="text-4xl font-extrabold mb-8 text-center text-gray-800 dark:text-gray-100"
+        className="text-4xl font-extrabold mb-8 text-center text-cyan-950 dark:text-cyan-400"
         data-aos="zoom-in"
       >
         About Us
